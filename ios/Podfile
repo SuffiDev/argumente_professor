@@ -34,6 +34,8 @@ target 'argumente_admin' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  pod 'RNPhotoEditor', :path => '../node_modules/react-native-photo-editor'
+
   target 'argumente_adminTests' do
     inherit! :search_paths
     # Pods for testing

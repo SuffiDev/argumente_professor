@@ -5,6 +5,7 @@ import { createDrawerNavigator } from 'react-navigation-drawer'
 import IndexProfessor from './views/IndexProfessor'
 import Login from './views/Login'
 import NovasRedacoes from './views/NovasRedacoes'
+import FormNovaRedacao from './views/FormNovaRedacao'
 
 import Menu from './views/Menu'
 
@@ -45,6 +46,14 @@ const menuRoutes = {
             title: 'IndexProfessor'
                     
         }
+    },
+    FormNovaRedacao: {
+        name: 'FormNovaRedacao',
+        screen: props => <FormNovaRedacao title='Index' {...props} />,
+        navigationOptions:{
+            title: 'FormNovaRedacao'
+                    
+        }
     }
 
 }
@@ -61,11 +70,15 @@ const menuNavigator = createDrawerNavigator(menuRoutes, menuConfig)
     NovasRedacoes: { 
       name: 'NovasRedacoes',
       screen: NovasRedacoes 
-    }
+    },
+    FormNovaRedacao: { 
+      name: 'FormNovaRedacao',
+      screen: FormNovaRedacao 
+    },
   };
 
 const mainNavigator = createSwitchNavigator(mainRoutes,  {
-    initialRouteName: 'NovasRedacoes'
+    initialRouteName: 'FormNovaRedacao'
 })
 
 
