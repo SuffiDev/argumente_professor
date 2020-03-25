@@ -52,25 +52,25 @@ export default class Index extends Component {
                 <View style={styles.content_buttons}> 
                     <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('NovasRedacoes')}>
                         <View style={styles.headerButton}>
-                            <Icon style={styles.iconStart} name="user" size={30} color='black' />
+                            <Icon style={styles.iconStart} name="book" size={30} color='black' />
                             <Text style={styles.textButton} >Redações a Corrigir</Text>
                         </View>
                     </TouchableOpacity>      
                 </View>
 
                 <View style={styles.content_buttons}> 
-                    <TouchableOpacity style={styles.content_buttons} onPress={()=>{}}>
+                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('RedacoesCorrigidas')}>
                         <View style={styles.headerButton}>
-                            <Icon style={styles.iconStart} name="book" size={30} color='black' />
+                            <Icon style={styles.iconStart} name="check" size={30} color='black' />
                             <Text style={styles.textButton} >Redações Corrigidas</Text>
                         </View>
                     </TouchableOpacity>  
                 </View>
 
                 <View style={styles.content_buttons}> 
-                    <TouchableOpacity style={styles.content_buttons} onPress={()=>{}}>
+                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('PerfilProfessor')}>
                         <View style={styles.headerButton}>
-                            <Icon style={styles.iconStart} name="clipboard" size={30} color='black' />
+                            <Icon style={styles.iconStart} name="user" size={30} color='black' />
                             <Text style={styles.textButton} >Perfil</Text>
                         </View>
                     </TouchableOpacity>     
@@ -78,7 +78,7 @@ export default class Index extends Component {
                 <View style={styles.content_buttons}> 
                     <TouchableOpacity style={styles.content_buttons} onPress={()=>{}}>
                         <View style={styles.headerButton}>
-                            <Icon style={styles.iconStart} name="clipboard" size={30} color='black' />
+                            <Icon style={styles.iconStart} name="sign-out" size={30} color='black' />
                             <Text style={styles.textButton} >Logout</Text>
                         </View>
                     </TouchableOpacity>     

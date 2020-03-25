@@ -20,7 +20,7 @@ import {
         Alert,
         TouchableOpacity
     } from 'react-native'
-    const initialState = {abriu: true, aluno: '', idRedacao: 1 ,caminhoImg: '', observacao: '', previewImg: require('../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
+    const initialState = {abriu: true, aluno: '', idRedacao: 1 ,caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
 export default class Register extends Component {
     state = {
         ...initialState
@@ -35,17 +35,19 @@ export default class Register extends Component {
         });
     }
     //Função chamada após o getRedacao, ele seta as variaveis padrões do sistema
-    loadItems = (data) => {
+    loadItems = async (data) => {
         const imagePath = `${RNFS.TemporaryDirectoryPath}/${data.data['desc'][0]['nomeArquivo']}`;
         RNFS.writeFile(imagePath, data.data['desc'][0]['caminhoImg'], 'base64').then(() => {
-            
+            console.log('id: ' + this.props.navigation.getParam('id', 0))
             this.setState({
                 idRedacao:data.data['desc'][0]['id'],
                 tema: data.data['desc'][0]['tema'],
                 aluno: data.data['desc'][0]['nome'],
                 caminhoImg: imagePath,
                 nomeArquivo: data.data['desc'][0]['nomeArquivo'],
-                previewImg: {uri: 'file://' + imagePath }
+                previewImg: {uri: 'file://' + imagePath },
+                idProfessor: this.props.navigation.getParam('id', 0)   
+                
             })
 
             
@@ -54,15 +56,18 @@ export default class Register extends Component {
     //função chamada ao carregar a view, usada para trazer os dados da redacao
     getRedacao = async () => {
         try {
+            const idProfessor = await AsyncStorage.getItem('@idAdmin')
+            let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
             await axios.post('http://192.168.0.29:3000/getRedacaoId',{                   
                     id: this.state.idRedacao,
                     observacao: this.state.observacao,
+                    idProfessor:1,
                     dadosImg:'teste'
                 }, (err, data) => {
                     console.log(err)
                     console.log(data)
                 }).then(data => {
-                    this.setState({abriu:false})
+                    this.setState({abriu:false, idProfessor: idProfessorInt})
                     console.log('entrou')
                     this.loadItems(data)
                     
@@ -80,12 +85,14 @@ export default class Register extends Component {
             idRedacao:this.state.idRedacao,
             dadosImagem: base64String,
             observacoes:this.state.observacao,
+            idProfessor:this.state.idProfessor,
             usuarioEnvio:'professor'
         }).then(data => {
             let retorno = data.data
             switch(retorno['status']) {
                 case 'ok':                    
-                    ToastAndroid.show('Redação Corrigida com sucesso!', ToastAndroid.LONG)   
+                    ToastAndroid.show('Redação Corrigida com sucesso!', ToastAndroid.LONG)
+                    this.props.navigation.navigate('NovasRedacoes') 
                     break;
                 case 'erro':
                     Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])

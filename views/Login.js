@@ -27,7 +27,7 @@ export default class Login extends Component {
         })
     }
     //Salva a sessão e redireciona para o Index 
-    newSession = async (dados_retorno) => {
+    newSessionProfessor = async (dados_retorno) => {
         ToastAndroid.show('Login efetuado com sucesso!', ToastAndroid.LONG);
         await AsyncStorage.setItem('@dadosLogin', JSON.stringify(dados_retorno));
         this.props.navigation.navigate('Index')
@@ -56,7 +56,24 @@ export default class Login extends Component {
                             console.log(this.state.tipoUsuario)
                             setaSessao(retorno['desc'][0],this.state.tipoUsuario).then((data) =>{
                                 if(data == 'ok'){
-                                    this.props.navigation.navigate('IndexProfessor')
+                                    if(jsonEnvio.tipoUsuario == 'Professor')
+                                    setaSessao(retorno['desc'][0]).then((data) =>{
+                                        if(data == 'ok'){
+                                            this.props.navigation.navigate('IndexProfessor')
+                                        }else{
+                                            Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
+                                        }
+                                    })
+                                        
+                                    else
+                                        setaSessao(retorno['desc'][0]).then((data) =>{
+                                            if(data == 'ok'){
+                                                this.props.navigation.navigate('IndexAdministrador')
+                                            }else{
+                                                Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
+                                            }
+                                        })
+                                        
                                 }else{
                                     Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
                                 }
@@ -146,13 +163,10 @@ const styles = StyleSheet.create({
     }
 })
 
-async function setaSessao(dados, tipo){
+async function setaSessao(dados){
     try{
-        console.log('nome' + tipo)
-        console.log('nome' + dados['id'])
-        await AsyncStorage.setItem('@id', '"' + dados['id'].toString()+ '"')
-        await AsyncStorage.setItem('@nome', dados['nome'])
-        await AsyncStorage.setItem('@tipo', tipo)
+        await AsyncStorage.setItem('@idAdmin', '"' + dados['id']+ '"')
+        await AsyncStorage.setItem('@nomeAdmin', dados['nome'])
         return 'ok'
     }catch(err){
         console.log(err)

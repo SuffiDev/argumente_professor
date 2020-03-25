@@ -6,6 +6,8 @@ import IndexProfessor from './views/IndexProfessor'
 import Login from './views/Login'
 import NovasRedacoes from './views/NovasRedacoes'
 import FormNovaRedacao from './views/FormNovaRedacao'
+import PerfilProfessor from './views/PerfilProfessor'
+import RedacoesCorrigidas from './views/RedacoesCorrigidas'
 
 import Menu from './views/Menu'
 
@@ -25,44 +27,55 @@ const menuConfig ={
   }
 }
 const menuRoutes = {  
-    Login: {
-        name: 'Login',
-        screen: props => <Login title='Login' {...props} />,
+    IndexProfessor: {
+        name: 'IndexProfessor',
+        screen: props => <IndexProfessor title='Index' {...props} />,
         navigationOptions:{
-            title: 'Login'
-        }
-    },
-    NovasRedacoes: {
-        name: 'NovasRedacoes',
-        screen: props => <NovasRedacoes title='NovasRedacoes' {...props} />,
-        navigationOptions:{
-            title: 'NovasRedacoes'
+            title: 'Index'
+                    
         }
     },
     IndexProfessor: {
         name: 'IndexProfessor',
         screen: props => <IndexProfessor title='Index' {...props} />,
         navigationOptions:{
-            title: 'IndexProfessor'
+            title: 'Index'
                     
         }
     },
-    FormNovaRedacao: {
-        name: 'FormNovaRedacao',
-        screen: props => <FormNovaRedacao title='Index' {...props} />,
+    NovasRedacoes: {
+        name: 'NovasRedacoes',
+        screen: props => <NovasRedacoes title='NovasRedacoes' {...props} />,
         navigationOptions:{
-            title: 'FormNovaRedacao'
+            title: 'Novas Redações'
+        }
+    },
+    RedacoesCorrigidas: {
+        name: 'RedacoesCorrigidas',
+        screen: props => <RedacoesCorrigidas title='RedacoesCorrigidas' {...props} />,
+        navigationOptions:{
+            title: 'Redações Corrigidas'
+        }
+    },
+    PerfilProfessor: {
+        name: 'PerfilProfessor',
+        screen: props => <PerfilProfessor title='Perfil' {...props} />,
+        navigationOptions:{
+            title: 'Perfil'
                     
+        }
+    },
+    Logout: {
+        name: 'Logout',
+        screen: props => <Login title='Logout' {...props} />,
+        navigationOptions:{
+            title: 'Logout'
         }
     }
 
 }
 const menuNavigator = createDrawerNavigator(menuRoutes, menuConfig)
   const mainRoutes = {
-    Login: { 
-        name: 'Login',
-        screen: Login 
-    } ,
     IndexProfessor: { 
       name: 'IndexProfessor',
       screen: IndexProfessor 
@@ -71,15 +84,27 @@ const menuNavigator = createDrawerNavigator(menuRoutes, menuConfig)
       name: 'NovasRedacoes',
       screen: NovasRedacoes 
     },
-    FormNovaRedacao: { 
-      name: 'FormNovaRedacao',
-      screen: FormNovaRedacao 
+    Login:{
+        name:'Login',
+        screen:Login
     },
+    FormNovaRedacao:{
+        name:'FormNovaRedacao',
+        screen:FormNovaRedacao
+    },
+    PerfilProfessor:{
+        name:'PerfilProfessor',
+        screen:PerfilProfessor
+    },
+    RedacoesCorrigidas:{
+        name:'RedacoesCorrigidas',
+        screen:RedacoesCorrigidas
+    }
   };
 
 const mainNavigator = createSwitchNavigator(mainRoutes,  {
-    initialRouteName: 'FormNovaRedacao'
+    initialRouteName: 'IndexProfessor'
 })
 
 
-export default createAppContainer(mainNavigator);
+export default createAppContainer(menuNavigator);
