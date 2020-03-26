@@ -27,7 +27,7 @@ function Item({ title, id, navigate }) {
             alignItems: 'center',
             justifyContent: 'center',
             height: 40
-        }} onPress={() => navigate.props.navigation.navigate('FormNovaRedacao',{'id':id})}>
+        }} onPress={() => navigate.props.navigation.navigate('DetalheRedacoesCorrigidas',{'id':id})}>
                 <Text style={{
                     color: 'black',
                     fontSize: 20
@@ -46,7 +46,11 @@ export default class Register extends Component {
     getRedacoes = async () => {
         try {
             this.atualizaStatus()
-            await axios.post('http://192.168.0.29:3000/getNovasRedacoes',{       
+            const idProfessor = await AsyncStorage.getItem('@idAdmin')
+            let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
+            console.log('id' +idProfessorInt)
+            await axios.post('http://192.168.0.29:3000/getRedacoesCorrigidas',{      
+                id: idProfessorInt 
                 }, (err, data) => {
                     console.log(err)
                     console.log(data)
@@ -81,7 +85,7 @@ export default class Register extends Component {
                         </TouchableOpacity>
                     </View>
                     <View >
-                        <Text style={styles.contentTextHeader} >NOVAS REDAÇÕES</Text>
+                        <Text style={styles.contentTextHeader} >REDAÇÕES CORRIGIDAS</Text>
                     </View>
 
                 </View>

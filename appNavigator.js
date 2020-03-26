@@ -43,6 +43,14 @@ const menuRoutes = {
                     
         }
     },
+    FormNovaRedacao: {
+        name: 'FormNovaRedacao',
+        screen: props => <FormNovaRedacao title='FormNovaRedacao' {...props} />,
+        navigationOptions:{
+            drawerLabel: () => null
+                    
+        }
+    },
     NovasRedacoes: {
         name: 'NovasRedacoes',
         screen: props => <NovasRedacoes title='NovasRedacoes' {...props} />,
