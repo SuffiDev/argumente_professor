@@ -61,7 +61,7 @@ export default class Register extends Component {
             await axios.post('http://192.168.0.29:3000/getRedacaoId',{                   
                     id: this.state.idRedacao,
                     observacao: this.state.observacao,
-                    idProfessor:1,
+                    idProfessor:idProfessorInt,
                     dadosImg:'teste'
                 }, (err, data) => {
                     console.log(err)
@@ -95,7 +95,7 @@ export default class Register extends Component {
                     this.props.navigation.navigate('NovasRedacoes') 
                     break;
                 case 'erro':
-                    Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
+                    Alert.alert( 'Erro','Erro Enviar Redação!. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
                     break;
             }
         })

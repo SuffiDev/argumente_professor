@@ -8,11 +8,13 @@ import NovasRedacoes from './views/NovasRedacoes'
 import FormNovaRedacao from './views/FormNovaRedacao'
 import PerfilProfessor from './views/PerfilProfessor'
 import RedacoesCorrigidas from './views/RedacoesCorrigidas'
+import DetalheRedacoesCorrigidas from './views/DetalheRedacoesCorrigidas'
+import IndexAdmin from './views/IndexAdmin'
 
 import Menu from './views/Menu'
 
 const menuConfig ={
-  initialRouteName: 'IndexProfessor',
+  initialRouteName: 'IndexAdmin',
   contentComponent: Menu,
   contentOptions: {
       labelStyle: {
@@ -65,6 +67,13 @@ const menuRoutes = {
             title: 'Redações Corrigidas'
         }
     },
+    DetalheRedacoesCorrigidas: {
+        name: 'DetalheRedacoesCorrigidas',
+        screen: props => <DetalheRedacoesCorrigidas title='RedacoesCorrigidas' {...props} />,
+        navigationOptions:{
+            drawerLabel: () => null
+        }
+    },
     PerfilProfessor: {
         name: 'PerfilProfessor',
         screen: props => <PerfilProfessor title='Perfil' {...props} />,
@@ -79,7 +88,38 @@ const menuRoutes = {
         navigationOptions:{
             title: 'Logout'
         }
-    }
+    },
+
+
+    IndexAdmin: {
+        name: 'IndexAdmin',
+        screen: props => <IndexAdmin title='RedacoesCorrigidas' {...props} />,
+        navigationOptions:{
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
+        }
+    },
+    CadastrarProfessor: {
+        name: 'IndexAdmin',
+        screen: props => <IndexAdmin title='RedacoesCorrigidas' {...props} />,
+        navigationOptions:{
+            drawerLabel: () => null
+        }
+    },
+    CadastrarParceiro: {
+        name: 'IndexAdmin',
+        screen: props => <IndexAdmin title='RedacoesCorrigidas' {...props} />,
+        navigationOptions:{
+            drawerLabel: () => null
+        }
+    },
+    CadastrarCodigo: {
+        name: 'IndexAdmin',
+        screen: props => <IndexAdmin title='RedacoesCorrigidas' {...props} />,
+        navigationOptions:{
+            drawerLabel: () => null
+        }
+    },
 
 }
 const menuNavigator = createDrawerNavigator(menuRoutes, menuConfig)
