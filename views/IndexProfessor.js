@@ -15,7 +15,7 @@ export default class Index extends Component {
         try {
             const idAluno = await AsyncStorage.getItem('@idAluno')
             let idAlunoInt = parseInt( idAluno.replace(/^"|"$/g, ""))
-            await axios.post('http://192.168.0.29:3000/pos_login',{
+            await axios.post('http://178.128.148.63:3000/pos_login',{
                 id: idAlunoInt
             }, (err, data) => {
                 console.log(err)
@@ -76,7 +76,7 @@ export default class Index extends Component {
                     </TouchableOpacity>     
                 </View>
                 <View style={styles.content_buttons}> 
-                    <TouchableOpacity style={styles.content_buttons} onPress={()=>{}}>
+                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('Logout')}>
                         <View style={styles.headerButton}>
                             <Icon style={styles.iconStart} name="sign-out" size={30} color='black' />
                             <Text style={styles.textButton} >Logout</Text>

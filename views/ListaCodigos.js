@@ -15,7 +15,6 @@ import {
     } from 'react-native'
 const initialState = {registros: [],abriu: true}
 
-
 function Item({ title, id, navigate }) {
     return (
         <View >
@@ -28,7 +27,9 @@ function Item({ title, id, navigate }) {
             alignItems: 'center',
             justifyContent: 'center',
             height: 40
-        }} onPress={() => navigate.props.navigation.navigate('FormNovaRedacao',{'id':id})}>
+        }} onPress={() => Alert.alert( 'Códigos','O que deseja fazer?',[
+            {text: 'Editar', onPress: () => navigate.editarCodigo(id)},
+            {text: 'Excluir', onPress:() => navigate.excluirCodigo(id)}])}>
                 <Text style={{
                     color: 'black',
                     fontSize: 20
@@ -44,28 +45,40 @@ export default class Register extends Component {
     atualizaStatus = () => {
         this.setState({abriu:false})
     }
+    excluirCodigo = async (id) => {
+        try {
+            await axios.post('http://178.128.148.63:3000/deletaCodigo',{  
+                    id:id 
+                }, (err, data) => {
+                }).then(data => {
+                    console.log(data.data['desc'])
+                    if(data.data['status'] == 'ok'){
+                        Alert.alert( 'Excluir professor','Excluido com sucesso!',[{text: 'OK', onPress: () => {}}])
+                        this.getRedacoes()
+                    }
+                    
+                })
+        } catch (error) {
+            console.log(error)
+        // Error saving data
+        }
+    }
+    editarCodigo = async (id) =>{
+        this.setState({...initialState})
+        this.props.navigation.navigate('EditaCodigo',{'id':id})
+    }
     getRedacoes = async () => {
         try {
             this.atualizaStatus()
-            let idRedacao = this.props.navigation.getParam('id', 0) 
-            await axios.post('http://178.128.148.63:3000/getCorrecoesRedacao',{      
-                id: idRedacao 
+            await axios.post('http://178.128.148.63:3000/getCodigos',{   
                 }, (err, data) => {
-                    console.log(err)
-                    console.log(data)
                 }).then(data => {
                     let listItems = []
                     let currentItem
-                    console.log(data.data['desc'])
                     for(let i =0; i< data.data['desc'].length; i++){
                         currentItem = data.data['desc'][i]
-                        if(currentItem['usuario_envio'] == 'professor'){
-                            listItems.push({id: currentItem['id_redacao'], title: 'Corrigido pelo Professor'})
-                        } else{
-                            listItems.push({id: currentItem['id_redacao'], title: 'Revisado pelo Aluno'})
-                        }
+                        listItems.push({id: currentItem['id'], title: currentItem['parceiro'] + ': ' + currentItem['quantidade'] + ' Disponíveis'})
                     }
-                    console.log(JSON.stringify(listItems))
                     this.setState({registros:listItems})
                     
                 })
@@ -74,48 +87,53 @@ export default class Register extends Component {
         // Error saving data
         }
     }
+    componentDidMount () {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+          this.getRedacoes();
+        });
+    }
     
     render() {
         if(this.state.abriu){
             this.getRedacoes()
         }
         return(
-            <ScrollView>
-                <View style={styles.content} >  
-                    <View style={styles.header}>
-                        <View style={styles.iconStart}>
-                            <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
-                                <Icon name="bars" size={30} color='#FFF'  /> 
-                            </TouchableOpacity>
-                        </View>
-                        <View >
-                            <Text style={styles.contentTextHeader} >DETALHES</Text>
-                        </View>
-
-                    </View>
-
-                    <View  style={styles.paddingTop}></View>
-                    <View style={{
-                        marginLeft: 20,
-                        marginRight: 20
-                    }}>
-                        <FlatList
-                            data={this.state.registros}
-                            renderItem={({ item }) => <Item style={{borderWidth: 1}}title={item.title} id={item.id} navigate={this}/>}
-                            keyExtractor={item => item.id}
-                        />
-                    </View>
-                    <View style={styles.content_buttons}> 
-                        <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('NovasRedacoes')}>
-                            <View style={styles.headerButton}>
-                                <Icon style={styles.iconStart} name="check" size={30} color='black' />
-                                <Text style={styles.textButton} >Nova Correção</Text>
+            <View style={styles.content} >  
+                <ScrollView>
+                        <View style={styles.header}>
+                            <View style={styles.iconStart}>
+                                <TouchableOpacity  onPress={() => this.props.navigation.navigate('IndexAdmin')}>
+                                    <Icon name="arrow-left" size={30} color='#FFF'  /> 
+                                </TouchableOpacity>
                             </View>
-                        </TouchableOpacity>      
-                    </View>
-                    
-                </View>       
-            </ScrollView> 
+                            <View >
+                                <Text style={styles.contentTextHeader} >CÓDIGOS CADASTRADOS</Text>
+                            </View>
+
+                        </View>
+
+                        <View  style={styles.paddingTop}></View>
+                        <View style={{
+                            marginLeft: 20,
+                            marginRight: 20
+                        }}>
+                            <FlatList
+                                data={this.state.registros}
+                                renderItem={({ item }) => <Item style={{borderWidth: 1}}title={item.title} id={item.id} navigate={this}/>}
+                                keyExtractor={item => item.id}
+                            />
+                        </View>
+
+                        <View style={styles.content_buttons}> 
+                            <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('CadastrarCodigo')}>
+                                <View style={styles.headerButton}>
+                                    <Icon style={styles.iconStart} name="check" size={30} color='black' />
+                                    <Text style={styles.textButton} >Novo Código</Text>
+                                </View>
+                            </TouchableOpacity>      
+                        </View>
+                </ScrollView> 
+            </View> 
         )
     }
 }

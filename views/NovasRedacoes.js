@@ -46,7 +46,7 @@ export default class Register extends Component {
     getRedacoes = async () => {
         try {
             this.atualizaStatus()
-            await axios.post('http://192.168.0.29:3000/getNovasRedacoes',{       
+            await axios.post('http://178.128.148.63:3000/getNovasRedacoes',{       
                 }, (err, data) => {
                     console.log(err)
                     console.log(data)
@@ -66,6 +66,12 @@ export default class Register extends Component {
             console.log(error)
         // Error saving data
         }
+    }
+
+    componentDidMount () {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+          this.setState({...initialState});
+        });
     }
     
     render() {

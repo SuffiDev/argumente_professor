@@ -58,7 +58,7 @@ export default class Register extends Component {
         try {
             const idProfessor = await AsyncStorage.getItem('@idAdmin')
             let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
-            await axios.post('http://192.168.0.29:3000/getRedacaoId',{                   
+            await axios.post('http://178.128.148.63:3000/getRedacaoId',{                   
                     id: this.state.idRedacao,
                     observacao: this.state.observacao,
                     idProfessor:idProfessorInt,
@@ -79,9 +79,15 @@ export default class Register extends Component {
         }
         
     }
+
+    componentDidMount () {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+          this.getRedacao();
+        });
+    }
     //Função que complementa o sendRedacao
     enviaDados = async (base64String) => {
-        await axios.post('http://192.168.0.29:3000/sendCorrecao', {
+        await axios.post('http://178.128.148.63:3000/sendCorrecao', {
             idRedacao:this.state.idRedacao,
             dadosImagem: base64String,
             observacoes:this.state.observacao,

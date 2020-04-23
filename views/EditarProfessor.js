@@ -17,20 +17,20 @@ export default class Register extends Component {
     state = {
         ...initialState
     }
+    
     listEstados = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"]
     //Função chamada assim que a tela abre
     onLoad = async () => {
         try {
-            const idProfessor = await AsyncStorage.getItem('@idAdmin')
-            let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
+            let idProfessor = this.props.navigation.getParam('id', 0)
             let retornoReq = await axios.post('http://178.128.148.63:3000/getProfessor',{                   
-                    id: idProfessorInt,
+                    id: idProfessor,
                 }, (err, data) => {
                     console.log(err)
 
                     console.log(data)
                 }).then(data => {
-                    this.setState({abriu:false, idProfessor: idProfessorInt})
+                    this.setState({abriu:false, idProfessor: idProfessor})
                     console.log('entrou')
                     console.log(data.data['desc'])
                     this.loadItems(data)
@@ -41,6 +41,12 @@ export default class Register extends Component {
         // Error saving data
         }
         
+    }
+
+    componentDidMount () {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+          this.onLoad();
+        });
     }
     //Função que seta valores para os campos assim que o resultado vem do banco
     loadItems = (data) => {
@@ -78,7 +84,9 @@ export default class Register extends Component {
                     console.log(data)
                 }).then(data => {
                     if(data.data['status'] == 'ok'){
-                        Alert.alert( 'Dados de Perfil',"Dados Salvos com sucesso!",[{text: 'OK', onPress: () => {}}])
+                        Alert.alert( 'Dados de Perfil',"Dados Salvos com sucesso!",[{text: 'OK', onPress: () => {
+                            this.props.navigation.navigate('ListaProfessor')
+                        }}])
                     }else{
                         Alert.alert( 'Dados de Perfil',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
                     }
@@ -119,12 +127,14 @@ export default class Register extends Component {
             <View style={styles.content} >  
                 <View style={styles.header}>
                     <View style={styles.iconStart}>
-                        <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
-                            <Icon name="bars" size={30} color='#FFF'  /> 
+                        <TouchableOpacity  onPress={() => {
+                            this.setState({...initialState})
+                            this.props.navigation.navigate('ListaProfessor')}}>
+                            <Icon name="arrow-left" size={30} color='#FFF'  /> 
                         </TouchableOpacity>
                     </View>
                     <View >
-                        <Text style={styles.contentTextHeader} >Seu Perfil</Text>
+                        <Text style={styles.contentTextHeader} >DADOS DO PROFESSOR</Text>
                     </View>
 
                 </View>
@@ -242,7 +252,7 @@ const styles = StyleSheet.create({
         paddingLeft:10,
         borderRadius:10,
         borderWidth: 0.1,
-        fontSize: 20
+        fontSize: 15
     },
     textDropDown:{
         color: 'black',
@@ -252,7 +262,7 @@ const styles = StyleSheet.create({
     }, 
     textDropDownText:{
         color: 'black',
-        fontSize: 20,
+        fontSize: 15,
     }, 
     textDropDownRow:{
         color: 'black',

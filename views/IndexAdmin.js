@@ -15,7 +15,7 @@ export default class Index extends Component {
         try {
             const idAluno = await AsyncStorage.getItem('@idAluno')
             let idAlunoInt = parseInt( idAluno.replace(/^"|"$/g, ""))
-            await axios.post('http://192.168.0.29:3000/pos_login',{
+            await axios.post('http://178.128.148.63:3000/pos_login',{
                 id: idAlunoInt
             }, (err, data) => {
                 console.log(err)
@@ -45,25 +45,23 @@ export default class Index extends Component {
 
                 </View>
                 <View style={styles.content_buttons}> 
-                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('NovasRedacoes')}>
+                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('ListaProfessor')}>
                         <View style={styles.headerButton}>
                             <Icon style={styles.iconStart} name="user" size={30} color='black' />
                             <Text style={styles.textButton} >Cadastrar Professor</Text>
                         </View>
                     </TouchableOpacity>      
                 </View>
-
                 <View style={styles.content_buttons}> 
-                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('PerfilProfessor')}>
+                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('ListaTema')}>
                         <View style={styles.headerButton}>
-                            <Icon style={styles.iconStart} name="users" size={30} color='black' />
-                            <Text style={styles.textButton} >Cadastrar Parceiro</Text>
+                            <Icon style={styles.iconStart} name="book" size={30} color='black' />
+                            <Text style={styles.textButton} >Cadastrar Tema</Text>
                         </View>
-                    </TouchableOpacity>     
+                    </TouchableOpacity>      
                 </View>
-
                 <View style={styles.content_buttons}> 
-                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('RedacoesCorrigidas')}>
+                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('ListaCodigos')}>
                         <View style={styles.headerButton}>
                             <Icon style={styles.iconStart} name="check" size={30} color='black' />
                             <Text style={styles.textButton} >Cadastrar Codigo</Text>
@@ -71,7 +69,7 @@ export default class Index extends Component {
                     </TouchableOpacity>  
                 </View>
                 <View style={styles.content_buttons}> 
-                    <TouchableOpacity style={styles.content_buttons} onPress={()=>{}}>
+                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('Logout')}>
                         <View style={styles.headerButton}>
                             <Icon style={styles.iconStart} name="sign-out" size={30} color='black' />
                             <Text style={styles.textButton} >Logout</Text>

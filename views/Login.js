@@ -41,7 +41,7 @@ export default class Login extends Component {
         }else{
             try{
                 ToastAndroid.show('Por favor, aguarde...', ToastAndroid.SHORT);
-                await axios.post('http://192.168.0.29:3000/loginAdmin',{                   
+                await axios.post('http://178.128.148.63:3000/loginAdmin',{                   
                     usuario: jsonEnvio.usuario,
                     senha: jsonEnvio.senha,
                     tipoUsuario: jsonEnvio.tipoUsuario,
@@ -54,33 +54,25 @@ export default class Login extends Component {
                     switch(retorno['status']) {
                         case 'ok':
                             console.log(this.state.tipoUsuario)
-                            setaSessao(retorno['desc'][0],this.state.tipoUsuario).then((data) =>{
-                                if(data == 'ok'){
-                                    if(jsonEnvio.tipoUsuario == 'Professor')
-                                    setaSessao(retorno['desc'][0]).then((data) =>{
-                                        if(data == 'ok'){
-                                            this.props.navigation.navigate('IndexProfessor')
-                                        }else{
-                                            Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
-                                        }
-                                    })
-                                        
-                                    else
-                                        setaSessao(retorno['desc'][0]).then((data) =>{
-                                            if(data == 'ok'){
-                                                this.props.navigation.navigate('IndexAdministrador')
-                                            }else{
-                                                Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
-                                            }
-                                        })
-                                        
-                                }else{
-                                    Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
-                                }
-                            })                            
+                            if(jsonEnvio.tipoUsuario == 'Professor')
+                                setaSessao(retorno['desc'][0]).then((data) =>{
+                                    if(data == 'ok'){
+                                        this.props.navigation.navigate('IndexProfessor')
+                                    }else{
+                                        Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde! ' + data ,[{text: 'Voltar', onPress: () => {}}])
+                                    }
+                                })                                        
+                            else
+                                setaSessao(retorno['desc'][0]).then((data) =>{
+                                    if(data == 'ok'){
+                                        this.props.navigation.navigate('IndexAdmin')
+                                    }else{
+                                        Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!' + data,[{text: 'Voltar', onPress: () => {}}])
+                                    }
+                                })                        
                             break;
                         case 'erro':
-                            Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
+                            Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!' + retorno['desc'],[{text: 'Voltar', onPress: () => {}}])
                             break;
                         case 'erro_senha':
                             Alert.alert( 'Erro ao logar','Usuario ou senha inválidos!',[{text: 'Voltar', onPress: () => {}}])
@@ -89,7 +81,7 @@ export default class Login extends Component {
                 })
             }catch(err){
                 console.log(err)
-                Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
+                Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!' + err,[{text: 'Voltar', onPress: () => {}}])
             }
         }
     }
@@ -165,6 +157,7 @@ const styles = StyleSheet.create({
 
 async function setaSessao(dados){
     try{
+        //await AsyncStorage.clear()
         await AsyncStorage.setItem('@idAdmin', '"' + dados['id']+ '"')
         await AsyncStorage.setItem('@nomeAdmin', dados['nome'])
         return 'ok'

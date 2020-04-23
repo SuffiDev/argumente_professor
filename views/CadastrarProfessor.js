@@ -12,82 +12,40 @@ import {
         Alert,
         ToastAndroid
     } from 'react-native'
-    const initialState = {nome:'', sobrenome: '', usuario:'', senha: '', escola: '', cidade:'', estado: '', abriu: true, idProfessor: ''}
+    
+    const initialState = {nome:'', sobreNome: '', escola:'', cidade: '', estado: '', usuario: '', senha: '',abriu: true}
 export default class Register extends Component {
     state = {
         ...initialState
     }
-    listEstados = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"]
-    //Função chamada assim que a tela abre
-    onLoad = async () => {
-        try {
-            const idProfessor = await AsyncStorage.getItem('@idAdmin')
-            let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
-            let retornoReq = await axios.post('http://178.128.148.63:3000/getProfessor',{                   
-                    id: idProfessorInt,
-                }, (err, data) => {
-                    console.log(err)
-
-                    console.log(data)
-                }).then(data => {
-                    this.setState({abriu:false, idProfessor: idProfessorInt})
-                    console.log('entrou')
-                    console.log(data.data['desc'])
-                    this.loadItems(data)
-                    
-                })
-        } catch (error) {
-            console.log(error)
-        // Error saving data
-        }
-        
-    }
-    //Função que seta valores para os campos assim que o resultado vem do banco
-    loadItems = (data) => {
-        console.log(data.data['desc'][0]['idade'])
-        this.setState({
-            nome: data.data['desc'][0]['nome'], 
-            sobrenome: data.data['desc'][0]['sobrenome'], 
-            usuario:data.data['desc'][0]['usuario'], 
-            senha: data.data['desc'][0]['senha'], 
-            idade: data.data['desc'][0]['idade'], 
-            escola: data.data['desc'][0]['escola'], 
-            cidade: data.data['desc'][0]['cidade'], 
-            estado: data.data['desc'][0]['estado']
-        })
-    }
-
     //Função que salva o perfil
-    savePerfil = async () => {
+    saveProfessor = async () => {
         try{
-            console.log(this.verificaCampos())
             if(this.verificaCampos()){
                 ToastAndroid.show('Por favor, aguarde...', ToastAndroid.SHORT)
-                await axios.post('http://178.128.148.63:3000/salvaProfessor',{           
-                    id: this.state.idProfessor,
+                await axios.post('http://178.128.148.63:3000/cadastrarProfessor',{
                     nome: this.state.nome,
-                    sobrenome: this.state.sobrenome,
-                    usuario: this.state.usuario,
-                    senha: this.state.senha,
-                    idade: this.state.idade,
+                    sobreNome: this.state.sobreNome,
                     escola: this.state.escola,
                     cidade: this.state.cidade,
-                    estado: this.state.estado
+                    estado: this.state.estado,
+                    usuario: this.state.usuario,
+                    senha: this.state.senha,
                 }, (err, data) => {
                     console.log(err)
                     console.log(data)
                 }).then(data => {
                     if(data.data['status'] == 'ok'){
-                        Alert.alert( 'Dados de Perfil',"Dados Salvos com sucesso!",[{text: 'OK', onPress: () => {}}])
+                        Alert.alert( 'Cadastro de Professores',"Dados Salvos com sucesso!",[{text: 'OK', onPress: () => {this.props.navigation.navigate('ListaProfessor')}}])                        
                     }else{
-                        Alert.alert( 'Dados de Perfil',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
+                        Alert.alert( 'Cadastro de Professores',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
                     }
                 })
             }else{
-                Alert.alert( 'Dados de Perfil',"Preencha todos os campos!",[{text: 'OK', onPress: () => {}}])
+                Alert.alert( 'Cadastro de Professores',"Preencha todos os campos!",[{text: 'OK', onPress: () => {}}])
             }
         }catch(err){
-            Alert.alert( 'Dados de Perfil',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
+            Alert.alert( 'Cadastro de Professores',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
         }
         
     }
@@ -95,15 +53,14 @@ export default class Register extends Component {
     verificaCampos = () => {
         try{
             console.log(this.state)
-            if( this.state.nome == null || this.state.sobrenome == null || this.state.usuario == null ||
-            this.state.senha == null || this.state.escola == undefined || this.state.cidade == null || this.state.estado == undefined){
+            if( this.state.nome == null || this.state.sobreNome == null || this.state.escola == null|| this.state.cidade == null|| this.state.estado == null|| this.state.usuario == null|| this.state.senha == null){
                 return false
             }else{
                 return true
             }
 
         }catch(err){
-            Alert.alert( 'Dados de Perfil',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
+            Alert.alert( 'Cadastro de Professores',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
         }
     }
     updateEstado(estado) {
@@ -111,20 +68,24 @@ export default class Register extends Component {
             estado: this.listEstados[estado]
         })
     }
+
+    componentDidMount () {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+          this.setState({...initialState})
+        });
+    }
+    listEstados = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"]
     render() {
-        if(this.state.abriu){
-            this.onLoad()
-        }
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>
                     <View style={styles.iconStart}>
-                        <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
-                            <Icon name="bars" size={30} color='#FFF'  /> 
+                        <TouchableOpacity  onPress={() => this.props.navigation.navigate('ListaProfessor')}>
+                            <Icon name="arrow-left" size={30} color='#FFF'  /> 
                         </TouchableOpacity>
                     </View>
                     <View >
-                        <Text style={styles.contentTextHeader} >Seu Perfil</Text>
+                        <Text style={styles.contentTextHeader} >CADASTRO DE PROFESSORES</Text>
                     </View>
 
                 </View>
@@ -137,25 +98,16 @@ export default class Register extends Component {
                 </View>
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Sobrenome: </Text>
-                    <TextInput style={styles.textContent} value={this.state.sobrenome} placeholder="Sobrenome" onChangeText={(sobrenome) => this.setState({ sobrenome })}/>  
+                    <TextInput style={styles.textContent} value={this.state.sobreNome} placeholder="Sobrenome" onChangeText={(sobreNome) => this.setState({ sobreNome })}/>  
                 </View>
-                <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Usuario: </Text>
-                    <TextInput style={styles.textContent} value={this.state.usuario} placeholder="Usuario" onChangeText={(usuario) => this.setState({ usuario })}/>  
-                </View>
-                <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Senha: </Text>
-                    <TextInput style={styles.textContent} value={this.state.senha} placeholder="Senha" onChangeText={(senha) => this.setState({ senha })}/>  
-                </View>              
-
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Escola: </Text>
-                    <TextInput style={styles.textContent} value={this.state.escola} placeholder="Idade"  onChangeText={(escola) => this.setState({ escola })}/>
-                </View>
+                    <TextInput style={styles.textContent} value={this.state.escola} placeholder="Escola" onChangeText={(escola) => this.setState({ escola })}/>  
+                </View>   
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Cidade: </Text>
                     <TextInput style={styles.textContent} value={this.state.cidade} placeholder="Cidade" onChangeText={(cidade) => this.setState({ cidade })}/>  
-                </View>
+                </View>  
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Estado: </Text>
                     <ModalDropdown 
@@ -164,17 +116,23 @@ export default class Register extends Component {
                         dropdownStyle={styles.textDropDownRow} 
                         value={this.state.estado} defaultValue={"Selecione"} options={this.listEstados} onSelect={(estado) => this.updateEstado(estado)}/> 
                      
-                </View>
+                </View>  
+                <View style={styles.contentButtons}> 
+                    <Text style={styles.labelButton} >Usuario: </Text>
+                    <TextInput style={styles.textContent} value={this.state.usuario} placeholder="Usuario" onChangeText={(usuario) => this.setState({ usuario })}/>  
+                </View>    
+                <View style={styles.contentButtons}> 
+                    <Text style={styles.labelButton} >Senha: </Text>
+                    <TextInput style={styles.textContent} value={this.state.senha} placeholder="Senha" onChangeText={(senha) => this.setState({ senha })}/>  
+                </View>     
                 <View style={styles.contentSend}> 
-                    <TouchableOpacity style={styles.sendButton} onPress={this.savePerfil}>
+                    <TouchableOpacity style={styles.sendButton} onPress={this.saveProfessor}>
                         <View style={styles.headerButton}>
                             <Icon style={styles.iconStart} name="save" size={30} color='black' />
                             <Text style={styles.textButton} >Salvar Dados</Text>
                         </View>
                     </TouchableOpacity>    
                 </View>
-
-
             </View>        
         )
     }
@@ -242,7 +200,7 @@ const styles = StyleSheet.create({
         paddingLeft:10,
         borderRadius:10,
         borderWidth: 0.1,
-        fontSize: 20
+        fontSize: 18
     },
     textDropDown:{
         color: 'black',
@@ -252,7 +210,7 @@ const styles = StyleSheet.create({
     }, 
     textDropDownText:{
         color: 'black',
-        fontSize: 20,
+        fontSize: 18,
     }, 
     textDropDownRow:{
         color: 'black',

@@ -49,7 +49,7 @@ export default class Register extends Component {
             const idProfessor = await AsyncStorage.getItem('@idAdmin')
             let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
             console.log('id' +idProfessorInt)
-            await axios.post('http://192.168.0.29:3000/getRedacoesCorrigidas',{      
+            await axios.post('http://178.128.148.63:3000/getRedacoesCorrigidas',{      
                 id: idProfessorInt 
                 }, (err, data) => {
                     console.log(err)
@@ -70,6 +70,12 @@ export default class Register extends Component {
             console.log(error)
         // Error saving data
         }
+    }
+
+    componentDidMount () {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+          this.setState({...initialState});
+        });
     }
     
     render() {

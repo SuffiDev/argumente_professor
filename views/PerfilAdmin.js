@@ -23,7 +23,7 @@ export default class Register extends Component {
         try {
             const idProfessor = await AsyncStorage.getItem('@idAdmin')
             let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
-            let retornoReq = await axios.post('http://178.128.148.63:3000/getProfessor',{                   
+            let retornoReq = await axios.post('http://34.70.122.134:3000/getProfessor',{                   
                     id: idProfessorInt,
                 }, (err, data) => {
                     console.log(err)
@@ -66,7 +66,7 @@ export default class Register extends Component {
                 await axios.post('http://178.128.148.63:3000/salvaProfessor',{           
                     id: this.state.idProfessor,
                     nome: this.state.nome,
-                    sobrenome: this.state.sobrenome,
+                    sobreNome: this.state.sobrenome,
                     usuario: this.state.usuario,
                     senha: this.state.senha,
                     idade: this.state.idade,
@@ -119,8 +119,8 @@ export default class Register extends Component {
             <View style={styles.content} >  
                 <View style={styles.header}>
                     <View style={styles.iconStart}>
-                        <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
-                            <Icon name="bars" size={30} color='#FFF'  /> 
+                        <TouchableOpacity  onPress={() => this.props.navigation.navigate('IndexAdmin')}>
+                            <Icon name="arrow-left" size={30} color='#FFF'  /> 
                         </TouchableOpacity>
                     </View>
                     <View >

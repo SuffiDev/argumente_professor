@@ -12,119 +12,86 @@ import {
         Alert,
         ToastAndroid
     } from 'react-native'
-    const initialState = {nome:'', sobrenome: '', usuario:'', senha: '', escola: '', cidade:'', estado: '', abriu: true, idProfessor: ''}
+    const initialState = {tema:'', dias: '', mes:'', ano: '', apoioPdf: '', apoioWeb:'', apoioVideo: '', abriu: true}
 export default class Register extends Component {
+    listMes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"]
+    listAno = ["2020","2021","2022","2023","2024","2025","2026","2027","2028","2029"]
     state = {
         ...initialState
     }
-    listEstados = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"]
-    //Função chamada assim que a tela abre
-    onLoad = async () => {
-        try {
-            const idProfessor = await AsyncStorage.getItem('@idAdmin')
-            let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
-            let retornoReq = await axios.post('http://178.128.148.63:3000/getProfessor',{                   
-                    id: idProfessorInt,
-                }, (err, data) => {
-                    console.log(err)
-
-                    console.log(data)
-                }).then(data => {
-                    this.setState({abriu:false, idProfessor: idProfessorInt})
-                    console.log('entrou')
-                    console.log(data.data['desc'])
-                    this.loadItems(data)
-                    
-                })
-        } catch (error) {
-            console.log(error)
-        // Error saving data
-        }
-        
-    }
-    //Função que seta valores para os campos assim que o resultado vem do banco
-    loadItems = (data) => {
-        console.log(data.data['desc'][0]['idade'])
-        this.setState({
-            nome: data.data['desc'][0]['nome'], 
-            sobrenome: data.data['desc'][0]['sobrenome'], 
-            usuario:data.data['desc'][0]['usuario'], 
-            senha: data.data['desc'][0]['senha'], 
-            idade: data.data['desc'][0]['idade'], 
-            escola: data.data['desc'][0]['escola'], 
-            cidade: data.data['desc'][0]['cidade'], 
-            estado: data.data['desc'][0]['estado']
-        })
-    }
-
-    //Função que salva o perfil
-    savePerfil = async () => {
+    //Função que salva o tema
+    saveTema = async () => {
         try{
-            console.log(this.verificaCampos())
             if(this.verificaCampos()){
                 ToastAndroid.show('Por favor, aguarde...', ToastAndroid.SHORT)
-                await axios.post('http://178.128.148.63:3000/salvaProfessor',{           
-                    id: this.state.idProfessor,
-                    nome: this.state.nome,
-                    sobrenome: this.state.sobrenome,
-                    usuario: this.state.usuario,
-                    senha: this.state.senha,
-                    idade: this.state.idade,
-                    escola: this.state.escola,
-                    cidade: this.state.cidade,
-                    estado: this.state.estado
+                await axios.post('http://178.128.148.63:3000/salvaTema',{           
+                    tema: this.state.tema,
+                    dias: this.state.dias,
+                    mes: this.state.mes,
+                    ano: this.state.ano,
+                    apoioPdf: this.state.apoioPdf,
+                    apoioWeb: this.state.apoioWeb,
+                    apoioVideo: this.state.apoioVideo,
                 }, (err, data) => {
                     console.log(err)
                     console.log(data)
                 }).then(data => {
                     if(data.data['status'] == 'ok'){
-                        Alert.alert( 'Dados de Perfil',"Dados Salvos com sucesso!",[{text: 'OK', onPress: () => {}}])
+                        Alert.alert( 'Tema',"Dados Salvos com sucesso!",[{text: 'OK', onPress: () => {this.props.navigation.navigate('ListaTema')}}])
                     }else{
-                        Alert.alert( 'Dados de Perfil',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
+                        Alert.alert( 'Tema',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
                     }
                 })
             }else{
-                Alert.alert( 'Dados de Perfil',"Preencha todos os campos!",[{text: 'OK', onPress: () => {}}])
+                Alert.alert( 'Tema',"Preencha todos os campos!",[{text: 'OK', onPress: () => {}}])
             }
         }catch(err){
-            Alert.alert( 'Dados de Perfil',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
+            Alert.alert( 'Tema',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
         }
         
+    }
+
+    componentDidMount () {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+          this.setState({...initialState});
+        });
     }
     //Função que verifica se tem algum campo vazio
     verificaCampos = () => {
         try{
             console.log(this.state)
-            if( this.state.nome == null || this.state.sobrenome == null || this.state.usuario == null ||
-            this.state.senha == null || this.state.escola == undefined || this.state.cidade == null || this.state.estado == undefined){
+            if( this.state.tema == null || this.state.dias == null || this.state.mes == null ||
+            this.state.ano == null || this.state.apoioPdf == undefined || this.state.apoioWeb == null || this.state.apoioVideo == undefined){
                 return false
             }else{
                 return true
             }
 
         }catch(err){
-            Alert.alert( 'Dados de Perfil',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
+            Alert.alert( 'Tema',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
         }
     }
-    updateEstado(estado) {
+    updateMes(estado) {
         this.setState({
-            estado: this.listEstados[estado]
+            mes: this.listMes[estado]
+        })
+    }
+    updateAno(estado) {
+        this.setState({
+            ano: this.listAno[estado]
         })
     }
     render() {
-        if(this.state.abriu){
-            this.onLoad()
-        }
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>
                     <View style={styles.iconStart}>
-                        <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
-                            <Icon name="bars" size={30} color='#FFF'  /> 
+                        <TouchableOpacity  onPress={() => this.props.navigation.navigate('ListaTema')}>
+                            <Icon name="arrow-left" size={30} color='#FFF'  /> 
                         </TouchableOpacity>
                     </View>
                     <View >
-                        <Text style={styles.contentTextHeader} >Seu Perfil</Text>
+                        <Text style={styles.contentTextHeader} >Novo Tema</Text>
                     </View>
 
                 </View>
@@ -132,41 +99,46 @@ export default class Register extends Component {
                 
                 </View>
                 <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Nome: </Text>
-                    <TextInput controlled={true} style={styles.textContent} value={this.state.nome} placeholder="Nome" onChangeText={(nome) => this.setState({ nome })}/>  
+                    <Text style={styles.labelButton} >Tema: </Text>
+                    <TextInput controlled={true} style={styles.textContent} value={this.state.tema} placeholder="Tema" onChangeText={(tema) => this.setState({ tema })}/>  
                 </View>
                 <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Sobrenome: </Text>
-                    <TextInput style={styles.textContent} value={this.state.sobrenome} placeholder="Sobrenome" onChangeText={(sobrenome) => this.setState({ sobrenome })}/>  
+                    <Text style={styles.labelButton} >Dias: </Text>
+                    <TextInput style={styles.textContent} keyboardType='numeric' value={this.state.dias} placeholder="Dias (Use , como separador. Ex: 01,02,03,04)" onChangeText={(dias) => this.setState({ dias })}/>  
                 </View>
                 <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Usuario: </Text>
-                    <TextInput style={styles.textContent} value={this.state.usuario} placeholder="Usuario" onChangeText={(usuario) => this.setState({ usuario })}/>  
-                </View>
-                <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Senha: </Text>
-                    <TextInput style={styles.textContent} value={this.state.senha} placeholder="Senha" onChangeText={(senha) => this.setState({ senha })}/>  
-                </View>              
-
-                <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Escola: </Text>
-                    <TextInput style={styles.textContent} value={this.state.escola} placeholder="Idade"  onChangeText={(escola) => this.setState({ escola })}/>
-                </View>
-                <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Cidade: </Text>
-                    <TextInput style={styles.textContent} value={this.state.cidade} placeholder="Cidade" onChangeText={(cidade) => this.setState({ cidade })}/>  
-                </View>
-                <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Estado: </Text>
+                    <Text style={styles.labelButton} >Mês: </Text>
                     <ModalDropdown 
-                        style={styles.textDropDown} ref="dropEstado"
+                        style={styles.textDropDown} ref="dropMes"
                         textStyle={styles.textDropDownText} 
                         dropdownStyle={styles.textDropDownRow} 
-                        value={this.state.estado} defaultValue={"Selecione"} options={this.listEstados} onSelect={(estado) => this.updateEstado(estado)}/> 
+                        value={this.state.mes} defaultValue={"Selecione"} options={this.listMes} onSelect={(mes) => this.updateMes(mes)}/> 
                      
                 </View>
+                <View style={styles.contentButtons}> 
+                    <Text style={styles.labelButton} >Ano: </Text>
+                    <ModalDropdown 
+                        style={styles.textDropDown} ref="dropAno"
+                        textStyle={styles.textDropDownText} 
+                        dropdownStyle={styles.textDropDownRow} 
+                        value={this.state.ano} defaultValue={"Selecione"} options={this.listAno} onSelect={(ano) => this.updateAno(ano)}/> 
+                     
+                </View>           
+
+                <View style={styles.contentButtons}> 
+                    <Text style={styles.labelButton} >Link Web: </Text>
+                    <TextInput style={styles.textContent} value={this.state.apoioWeb} placeholder="Link Web"  onChangeText={(apoioWeb) => this.setState({ apoioWeb })}/>
+                </View>
+                <View style={styles.contentButtons}> 
+                    <Text style={styles.labelButton} >Link Youtube: </Text>
+                    <TextInput style={styles.textContent} value={this.state.apoioVideo} placeholder="Link Youtube" onChangeText={(apoioVideo) => this.setState({ apoioVideo })}/>  
+                </View>
+                <View style={styles.contentButtons}> 
+                    <Text style={styles.labelButton} >Link PDF: </Text>
+                    <TextInput style={styles.textContent} value={this.state.apoioPdf} placeholder="Link Pdf" onChangeText={(apoioPdf) => this.setState({ apoioPdf })}/>  
+                </View>
                 <View style={styles.contentSend}> 
-                    <TouchableOpacity style={styles.sendButton} onPress={this.savePerfil}>
+                    <TouchableOpacity style={styles.sendButton} onPress={this.saveTema}>
                         <View style={styles.headerButton}>
                             <Icon style={styles.iconStart} name="save" size={30} color='black' />
                             <Text style={styles.textButton} >Salvar Dados</Text>
@@ -242,7 +214,7 @@ const styles = StyleSheet.create({
         paddingLeft:10,
         borderRadius:10,
         borderWidth: 0.1,
-        fontSize: 20
+        fontSize: 15
     },
     textDropDown:{
         color: 'black',
@@ -252,7 +224,7 @@ const styles = StyleSheet.create({
     }, 
     textDropDownText:{
         color: 'black',
-        fontSize: 20,
+        fontSize: 15,
     }, 
     textDropDownRow:{
         color: 'black',
