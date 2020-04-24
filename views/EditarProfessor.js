@@ -172,7 +172,7 @@ export default class Register extends Component {
                         style={styles.textDropDown} ref="dropEstado"
                         textStyle={styles.textDropDownText} 
                         dropdownStyle={styles.textDropDownRow} 
-                        value={this.state.estado} defaultValue={"Selecione"} options={this.listEstados} onSelect={(estado) => this.updateEstado(estado)}/> 
+                        value={this.state.estado} defaultValue={this.state.estado} options={this.listEstados} onSelect={(estado) => this.updateEstado(estado)}/> 
                      
                 </View>
                 <View style={styles.contentSend}> 
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         position: 'absolute',
         left:0,
-        marginLeft:5
+        marginLeft:10
         
     },
     contentTextHeader:{ // Style do Texto que fica no centro do header
@@ -307,13 +307,6 @@ const styles = StyleSheet.create({
     textButton:{ // Texto dos botões que vão ficar no corpo da tela
         color: 'black',        
         fontSize: 20
-    },
-    iconStart:{ // Style do Icone que fica no start do Header
-        justifyContent: 'flex-start',
-        position: 'absolute',
-        left:0,
-        marginLeft:5
-        
     },
     
 })

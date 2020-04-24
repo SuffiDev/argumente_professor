@@ -111,91 +111,104 @@ const menuRoutes = {
         name: 'IndexAdmin',
         screen: props => <IndexAdmin title='RedacoesCorrigidas' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     },
     ListaTema: {
         name: 'ListaTema',
         screen: props => <ListaTema title='ListaTema' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     },
     CadastrarTema: {
         name: 'CadastrarTema',
         screen: props => <CadastrarTema title='CadastrarTema' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     },
     CadastrarParceiro: {
         name: 'IndexAdmin',
         screen: props => <IndexAdmin title='RedacoesCorrigidas' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     },
     CadastrarCodigo: {
         name: 'CadastrarCodigo',
         screen: props => <CadastrarCodigo title='CadastrarCodigo' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     },
     ListaCodigos: {
         name: 'ListaCodigos',
         screen: props => <ListaCodigos title='ListaCodigos' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     },
     AlterarCodigo: {
         name: 'AlterarCodigo',
         screen: props => <AlterarCodigo title='AlterarCodigo' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     },
     PerfilAdmin: {
         name: 'PerfilAdmin',
         screen: props => <PerfilAdmin title='PerfilAdmin' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     },
     CadastrarProfessor: {
         name: 'CadastrarProfessor',
         screen: props => <CadastrarProfessor title='CadastrarProfessor' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     },
     ListaProfessor: {
         name: 'ListaProfessor',
         screen: props => <ListaProfessor title='ListaProfessor' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     },
     AlterarProfessor: {
         name: 'AlterarProfessor',
         screen: props => <AlterarProfessor title='AlterarProfessor' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     },
     EditaTema: {
         name: 'EditaTema',
         screen: props => <EditaTema title='EditaTema' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     },
     EditaCodigo: {
         name: 'AlterarCodigo',
         screen: props => <AlterarCodigo title='AlterarCodigo' {...props} />,
         navigationOptions:{
-            drawerLabel: () => null
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
         }
     }
 

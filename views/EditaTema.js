@@ -19,6 +19,32 @@ export default class Register extends Component {
     state = {
         ...initialState
     }
+    getMes = () => {
+        if(this.state.mes == 1)
+            return 'Janeiro'
+        if(this.state.mes == 1)
+            return 'Fevereiro'
+        if(this.state.mes == 1)
+            return 'Março'
+        if(this.state.mes == 1)
+            return 'Abril'
+        if(this.state.mes == 1)
+            return 'Maio'
+        if(this.state.mes == 1)
+            return 'Junho'
+        if(this.state.mes == 1)
+            return 'Julho'
+        if(this.state.mes == 1)
+            return 'Agosto'
+        if(this.state.mes == 1)
+            return 'Setembro'
+        if(this.state.mes == 1)
+            return 'Outubro'
+        if(this.state.mes == 1)
+            return 'Novembro'
+        if(this.state.mes == 1)
+            return 'Dezembro'
+    }
     onLoad = async () => {
         try {
             let idProfessor = this.props.navigation.getParam('id', 0)
@@ -148,7 +174,7 @@ export default class Register extends Component {
                         style={styles.textDropDown} ref="dropMes"
                         textStyle={styles.textDropDownText} 
                         dropdownStyle={styles.textDropDownRow} 
-                        value={this.state.mes} defaultValue={"Selecione"} options={this.listMes} onSelect={(mes) => this.updateMes(mes)}/> 
+                        value={this.state.mes} defaultValue={this.listMes[this.state.mes -1]} options={this.listMes} onSelect={(mes) => this.updateMes(mes)}/> 
                      
                 </View>
                 <View style={styles.contentButtons}> 
@@ -157,7 +183,7 @@ export default class Register extends Component {
                         style={styles.textDropDown} ref="dropAno"
                         textStyle={styles.textDropDownText} 
                         dropdownStyle={styles.textDropDownRow} 
-                        value={this.state.ano} defaultValue={"Selecione"} options={this.listAno} onSelect={(ano) => this.updateAno(ano)}/> 
+                        value={this.state.ano} defaultValue={this.state.ano} options={this.listAno} onSelect={(ano) => this.updateAno(ano)}/> 
                      
                 </View>           
 
@@ -206,7 +232,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         position: 'absolute',
         left:0,
-        marginLeft:5
+        marginLeft:10
         
     },
     contentTextHeader:{ // Style do Texto que fica no centro do header
@@ -305,13 +331,6 @@ const styles = StyleSheet.create({
     textButton:{ // Texto dos botões que vão ficar no corpo da tela
         color: 'black',        
         fontSize: 20
-    },
-    iconStart:{ // Style do Icone que fica no start do Header
-        justifyContent: 'flex-start',
-        position: 'absolute',
-        left:0,
-        marginLeft:5
-        
     },
     
 })
