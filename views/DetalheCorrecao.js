@@ -21,8 +21,9 @@ import {
         Alert,
         TouchableOpacity
     } from 'react-native'
-    const initialState = {abriu: true, aluno: '', idRedacao: '' ,caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
+    const initialState = {abriu: true, aluno: '', idRedacao: '', nota: '',caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
 export default class Register extends Component {
+    
     state = {
         ...initialState
     }
@@ -32,7 +33,8 @@ export default class Register extends Component {
             onDone: (data) => {
                 console.log('done' + data)
                 this.setState({previewImg:{uri: 'file://' + data}, caminhoImg: data })
-            }
+            },
+            hiddenControls: ['crop']
         });
     }
     //Função chamada após o getRedacao, ele seta as variaveis padrões do sistema
@@ -48,6 +50,7 @@ export default class Register extends Component {
                 aluno: data.data['desc'][0]['nome'],
                 caminhoImg: imagePath,
                 nomeArquivo: data.data['desc'][0]['nomeArquivo'],
+                nota: data.data['desc'][0]['nota'],
                 previewImg: {uri: 'file://' + imagePath },
                 idProfessor: idProfessorInt   
                 
@@ -61,7 +64,6 @@ export default class Register extends Component {
         try {
             let idRedacao = this.props.navigation.getParam('id','0')   
             console.log('id da redacao: ' + idRedacao)
-            ToastAndroid.show('Por favor, aguarde...', ToastAndroid.LONG)
             await axios.post('http://178.128.148.63:3000/getRedacaoId',{                   
                     id: idRedacao
                 }, (err, data) => {
@@ -83,33 +85,7 @@ export default class Register extends Component {
     }
 
     componentDidMount () {
-        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
-          this.getRedacao();
-        });
-    }
-    //Função que complementa o sendRedacao
-    enviaDados = async (base64String) => {
-        const idProfessor = await AsyncStorage.getItem('@idAdmin')
-        let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))        
-        await axios.post('http://178.128.148.63:3000/sendCorrecao', {
-            idRedacao:this.state.idRedacao,
-            dadosImagem: base64String,
-            observacoes:this.state.observacao,
-            nota:this.state.nota,
-            idProfessor:idProfessorInt,
-            usuarioEnvio:'professor'
-        }).then(data => {
-            let retorno = data.data
-            switch(retorno['status']) {
-                case 'ok':                    
-                    ToastAndroid.show('Redação Corrigida com sucesso!', ToastAndroid.LONG)
-                    this.props.navigation.navigate('NovasRedacoes') 
-                    break;
-                case 'erro':
-                    Alert.alert( 'Erro','Erro Enviar Redação!. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
-                    break;
-            }
-        })
+        this.getRedacao();
     }
     //Função que pega os dados e envia para a api
     sendRedacao = () => {
@@ -125,6 +101,9 @@ export default class Register extends Component {
         }
     }
     render() {
+        if(this.state.abriu){
+            this.getRedacao()
+        }
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>
@@ -146,8 +125,7 @@ export default class Register extends Component {
                     <Text style={styles.textTema}>Aluno: {this.state.aluno} </Text>  
                 </View>
                 <View style={styles.content_buttons_first}> 
-                    <Text style={styles.labelButton} >Nota: </Text>
-                    <TextInput style={styles.textTema} placeholder="Digite uma nota" value={this.state.nota} onChangeText={(nota) => this.setState({ nota })}></TextInput>
+                    <Text style={styles.textTema}>Nota: {this.state.nota} </Text>  
                 </View>
 
                 
@@ -156,21 +134,6 @@ export default class Register extends Component {
                         <Image style={{width:150, height:150}}source={this.state.previewImg} />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.contentSend}> 
-                <TextInput style={styles.textObs} multiline = {true} placeholder="Observações" value={this.state.observacao} onChangeText={(observacao) => this.setState({ observacao })}></TextInput> 
-                </View>
-
-
-
-                <View style={styles.buttonSend}> 
-                    <TouchableOpacity style={styles.content_buttons} onPress={this.sendRedacao}>
-                        <View style={styles.headerSend}>
-                            <Icon style={styles.iconStart} name="send" size={30} color='black' />
-                            <Text style={styles.textSend} >Enviar Correção</Text>
-                        </View>
-                    </TouchableOpacity>  
-                </View>
-
 
             </View>        
         )
@@ -219,11 +182,12 @@ const styles = StyleSheet.create({
         marginTop: 20,        
     },
     content_buttons_first:{ // Texto dos botões que vão ficar no corpo da tela
-        marginTop: 10,      
+        marginTop: 0,      
         flexDirection:"row",
         alignItems: 'center',
         justifyContent: 'center',  
         marginLeft: 20,
+        height:60,
         marginRight: 20,
     },
     buttonSend:{
@@ -232,6 +196,7 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         alignItems: 'center',
         justifyContent: 'center',
+        height:60,
         borderRadius:10,
     },
     contentSend:{

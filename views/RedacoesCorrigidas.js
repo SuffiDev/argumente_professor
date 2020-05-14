@@ -8,6 +8,7 @@ import {
         Text, 
         StyleSheet,
         TouchableOpacity,
+        BackHandler,
         Alert,
         ToastAndroid,
         FlatList
@@ -30,7 +31,7 @@ function Item({ title, id, navigate }) {
         }} onPress={() => navigate.props.navigation.navigate('DetalheRedacoesCorrigidas',{'id':id})}>
                 <Text style={{
                     color: 'black',
-                    fontSize: 20
+                    fontSize: 15
                 }}>{title}</Text>
             </TouchableOpacity>
         </View>
@@ -48,7 +49,7 @@ export default class Register extends Component {
             this.atualizaStatus()
             const idProfessor = await AsyncStorage.getItem('@idAdmin')
             let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
-            console.log('id' +idProfessorInt)
+            console.log(idProfessorInt)
             await axios.post('http://178.128.148.63:3000/getRedacoesCorrigidas',{      
                 id: idProfessorInt 
                 }, (err, data) => {
@@ -85,7 +86,7 @@ export default class Register extends Component {
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>
-                    <View style={styles.iconStart}>
+                    <View style={styles.iconHeader}>
                         <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
                             <Icon name="bars" size={30} color='#FFF'  /> 
                         </TouchableOpacity>
@@ -142,6 +143,13 @@ const styles = StyleSheet.create({
         alignSelf:'center',
         fontSize:20,
         fontFamily: "Arial",
+    },
+    iconHeader:{ // Style do Icone que fica no start do Header
+        justifyContent: 'flex-start',
+        position: 'absolute',
+        left:0,
+        marginLeft:15
+        
     },
 
 })

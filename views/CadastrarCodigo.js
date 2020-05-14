@@ -3,16 +3,31 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
 import ModalDropdown from 'react-native-modal-dropdown'
+import ImagePicker from 'react-native-image-picker'
 import {
         View,
         Text, 
         StyleSheet,
         TextInput,
+        BackHandler,
         TouchableOpacity,
+        Image,
         Alert,
         ToastAndroid
     } from 'react-native'
-    const initialState = {parceiro:'', codigo: '', id:'', quantidade: '',abriu: true}
+const initialState = {parceiro:'', codigo: '', id:'', quantidade: '',abriu: true, previewImg: '', caminhoImg: ''}
+const options = {
+    quality       : 1,
+    mediaType    : "photo",
+    cameraType  : "back",
+    allowsEditing : true,
+    noData          : false,
+
+    storageOptions: {
+        skipBackup: true,
+        path: 'images',
+    },
+};   
 export default class Register extends Component {
     state = {
         ...initialState
@@ -27,7 +42,8 @@ export default class Register extends Component {
                 await axios.post('http://178.128.148.63:3000/salvarCodigo',{
                     parceiro: this.state.parceiro,
                     codigo: this.state.codigo,
-                    quantidade: this.state.quantidade,
+                    quantidade: this.state.quantidade,  
+                    imgPhoto: this.state.caminhoImg,
                 }, (err, data) => {
                     console.log(err)
                     console.log(data)
@@ -65,6 +81,13 @@ export default class Register extends Component {
           this.setState({...initialState});
         });
     }
+    openGallery = () => {
+        ImagePicker.launchImageLibrary(options, (response) => {
+            console.log(response.data)
+            const source = { uri: 'file://' +response.path }
+            this.setState({ previewImg: {uri: 'file://' + response.path }, caminhoImg: response.data });
+          });
+    }
     render() {
         return(
             <View style={styles.content} >  
@@ -93,7 +116,19 @@ export default class Register extends Component {
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Quantidade: </Text>
                     <TextInput style={styles.textContent} keyboardType='numeric' value={this.state.quantidade} placeholder="Quantidade" onChangeText={(quantidade) => this.setState({ quantidade })}/>  
-                </View>        
+                </View>
+                <View style={styles.contentSend}> 
+                    <TouchableOpacity style={styles.buttonFoto}  onPress={this.openGallery}>
+                        <View style={styles.headerButton}>
+                            <Text style={styles.textButton} >Adicionar Logo</Text>
+                        </View>
+                    </TouchableOpacity>     
+                </View>
+                <View style={styles.showImagem}> 
+                    <TouchableOpacity style={{height:100}}   onPress={()=>{}}>
+                        <Image style={{width:100, height:100}}source={this.state.previewImg} />
+                    </TouchableOpacity>
+                </View>
                 <View style={styles.contentSend}> 
                     <TouchableOpacity style={styles.sendButton} onPress={this.saveCodigo}>
                         <View style={styles.headerButton}>
@@ -112,6 +147,14 @@ const styles = StyleSheet.create({
         flex:1,
         width: '100%',
         height: '100%'
+    },
+    showImagem:{
+        marginTop: 10,
+        flexDirection:"row",
+        alignItems: 'center',
+        justifyContent: 'center',
+        resizeMode: 'contain'
+
     },
     header:{ // Style do Header geral
         backgroundColor:'#0066CC',
@@ -133,7 +176,7 @@ const styles = StyleSheet.create({
         color:'white',
         textAlign:'center',
         alignSelf:'center',
-        fontSize:20,
+        fontSize:15,
         fontFamily: "Arial",
     },
     headerButton:{ //Header de cada um dos botões que vão ficar no corpo da tela
@@ -213,6 +256,16 @@ const styles = StyleSheet.create({
         borderWidth:1,
         borderRadius:10,
         width:'100%',
+        flexDirection:"row",
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 40
+    },
+    buttonFoto:{
+        borderColor:'#0066CC',
+        borderWidth:1,
+        borderRadius:10,
+        width:'70%',
         flexDirection:"row",
         alignItems: 'center',
         justifyContent: 'center',

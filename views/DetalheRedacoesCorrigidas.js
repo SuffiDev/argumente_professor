@@ -9,6 +9,7 @@ import {
         StyleSheet,
         TouchableOpacity,
         Alert,
+        BackHandler,
         ScrollView,
         ToastAndroid,
         FlatList
@@ -28,7 +29,7 @@ function Item({ title, id, navigate }) {
             alignItems: 'center',
             justifyContent: 'center',
             height: 40
-        }} onPress={() => navigate.props.navigation.navigate('FormNovaRedacao',{'id':id})}>
+        }} onPress={() => navigate.props.navigation.navigate('DetalheCorrecao',{'id':id})}>
                 <Text style={{
                     color: 'black',
                     fontSize: 20
@@ -83,7 +84,7 @@ export default class Register extends Component {
             <ScrollView>
                 <View style={styles.content} >  
                     <View style={styles.header}>
-                        <View style={styles.iconStart}>
+                        <View style={styles.iconHeader}>
                             <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
                                 <Icon name="bars" size={30} color='#FFF'  /> 
                             </TouchableOpacity>
@@ -104,14 +105,6 @@ export default class Register extends Component {
                             renderItem={({ item }) => <Item style={{borderWidth: 1}}title={item.title} id={item.id} navigate={this}/>}
                             keyExtractor={item => item.id}
                         />
-                    </View>
-                    <View style={styles.content_buttons}> 
-                        <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('NovasRedacoes')}>
-                            <View style={styles.headerButton}>
-                                <Icon style={styles.iconStart} name="check" size={30} color='black' />
-                                <Text style={styles.textButton} >Nova Correção</Text>
-                            </View>
-                        </TouchableOpacity>      
                     </View>
                     
                 </View>       
@@ -181,6 +174,13 @@ const styles = StyleSheet.create({
         left:0,
         marginLeft:5
         
-    }
+    },
+    iconHeader:{ // Style do Icone que fica no start do Header
+        justifyContent: 'flex-start',
+        position: 'absolute',
+        left:0,
+        marginLeft:15
+        
+    },
 
 })

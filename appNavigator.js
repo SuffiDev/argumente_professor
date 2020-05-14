@@ -2,6 +2,8 @@ import React from 'react'
 import { createAppContainer, createSwitchNavigator, Icon, Text, View,   } from 'react-navigation'
 import { createDrawerNavigator } from 'react-navigation-drawer'
 
+import AsyncStorage from '@react-native-community/async-storage'
+
 import IndexProfessor from './views/IndexProfessor'
 import Login from './views/Login'
 import NovasRedacoes from './views/NovasRedacoes'
@@ -20,6 +22,10 @@ import CadastrarTema from './views/CadastrarTema'
 import AlterarProfessor from './views/EditarProfessor'
 import ListaTema from './views/ListaTemas'
 import EditaTema from './views/EditaTema'
+import DetalheCorrecao from './views/DetalheCorrecao'
+import FaleConosco from './views/FaleConosco'
+import ListaFaleConosco from './views/ListaFaleConosco'
+import DetalheFaleConosco from './views/DetalheFaleConosco'
 
 import Menu from './views/Menu'
 
@@ -47,11 +53,11 @@ const menuRoutes = {
                     
         }
     },
-    IndexProfessor: {
-        name: 'IndexProfessor',
-        screen: props => <IndexProfessor title='Index' {...props} />,
+    FaleConosco: {
+        name: 'FaleConosco',
+        screen: props => <FaleConosco title='FaleConosco' {...props} />,
         navigationOptions:{
-            title: 'Index'
+            title: 'FaleConosco'
                     
         }
     },
@@ -97,6 +103,13 @@ const menuRoutes = {
         screen: props => <Login title='Logout' {...props} />,
         navigationOptions:{
             title: 'Logout'
+        }
+    },
+    DetalheCorrecao: {
+        name: 'DetalheCorrecao',
+        screen: props => <DetalheCorrecao title='DetalheCorrecao' {...props} />,
+        navigationOptions:{
+            drawerLabel: () => null
         }
     },
     IndexAdmin: {
@@ -150,6 +163,22 @@ const menuRoutes = {
     ListaCodigos: {
         name: 'ListaCodigos',
         screen: props => <ListaCodigos title='ListaCodigos' {...props} />,
+        navigationOptions:{
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
+        }
+    },
+    ListaFaleConosco: {
+        name: 'ListaFaleConosco',
+        screen: props => <ListaFaleConosco title='ListaFaleConosco' {...props} />,
+        navigationOptions:{
+            drawerLabel: () => null,
+            drawerLockMode: 'locked-closed'
+        }
+    },
+    DetalheFaleConosco: {
+        name: 'DetalheFaleConosco',
+        screen: props => <DetalheFaleConosco title='DetalheFaleConosco' {...props} />,
         navigationOptions:{
             drawerLabel: () => null,
             drawerLockMode: 'locked-closed'
@@ -213,6 +242,7 @@ const menuRoutes = {
     }
 
 }
+console.log('id do aluno:' + JSON.stringify(AsyncStorage.getItem('@idAdmin')))
 const menuNavigator = createDrawerNavigator(menuRoutes, menuConfig)
   const mainRoutes = {
     IndexProfessor: { 

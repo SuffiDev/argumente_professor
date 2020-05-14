@@ -39,13 +39,13 @@ export default class Index extends Component {
         return(
             <View style={styles.content} >  
                 <View style={styles.header} onLoad>
-                    <View style={styles.iconStart}>
+                    <View style={styles.iconHeader}>
                         <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
                             <Icon name="bars" size={30} color='#FFF'  /> 
                         </TouchableOpacity>
                     </View>
                     <View >
-                        <Text style={styles.contentTextHeader} >BEM VINDO, PROFESSOR!</Text>
+                        <Text style={styles.contentTextHeader} >BEM-VINDO, PROFESSOR!</Text>
                     </View> 
 
                 </View>
@@ -72,6 +72,15 @@ export default class Index extends Component {
                         <View style={styles.headerButton}>
                             <Icon style={styles.iconStart} name="user" size={30} color='black' />
                             <Text style={styles.textButton} >Perfil</Text>
+                        </View>
+                    </TouchableOpacity>     
+                </View>
+
+                <View style={styles.content_buttons}> 
+                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('FaleConosco')}>
+                        <View style={styles.headerButton}>
+                            <Icon style={styles.iconStart} name="phone" size={30} color='black' />
+                            <Text style={styles.textButton} >Fale Conosco</Text>
                         </View>
                     </TouchableOpacity>     
                 </View>
@@ -141,6 +150,13 @@ const styles = StyleSheet.create({
     textButton:{ // Texto dos botões que vão ficar no corpo da tela
         color: 'black',        
         fontSize: 20
-    }
+    },
+    iconHeader:{ // Style do Icone que fica no start do Header
+        justifyContent: 'flex-start',
+        position: 'absolute',
+        left:0,
+        marginLeft:15
+        
+    },
     
 })

@@ -3,8 +3,10 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
 import ModalDropdown from 'react-native-modal-dropdown'
+
 import {
         View,
+        BackHandler,
         Text, 
         StyleSheet,
         TouchableOpacity,
@@ -13,6 +15,8 @@ import {
         FlatList
     } from 'react-native'
 const initialState = {registros: [],abriu: true}
+
+
 
 
 function Item({ title, id, navigate }) {
@@ -30,7 +34,7 @@ function Item({ title, id, navigate }) {
         }} onPress={() => navigate.props.navigation.navigate('FormNovaRedacao',{'id':id})}>
                 <Text style={{
                     color: 'black',
-                    fontSize: 20
+                    fontSize: 15
                 }}>{title}</Text>
             </TouchableOpacity>
         </View>
@@ -43,6 +47,7 @@ export default class Register extends Component {
     atualizaStatus = () => {
         this.setState({abriu:false})
     }
+    
     getRedacoes = async () => {
         try {
             this.atualizaStatus()
@@ -67,6 +72,12 @@ export default class Register extends Component {
         // Error saving data
         }
     }
+    handleBackButtonClick() {
+        console.log('caiu no evento')
+        alert('teste')
+        this.props.navigation.navigate('IndexProfessor')
+        return true;
+    }
 
     componentDidMount () {
         this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
@@ -81,7 +92,7 @@ export default class Register extends Component {
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>
-                    <View style={styles.iconStart}>
+                    <View style={styles.iconHeader}>
                         <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
                             <Icon name="bars" size={30} color='#FFF'  /> 
                         </TouchableOpacity>
@@ -138,6 +149,13 @@ const styles = StyleSheet.create({
         alignSelf:'center',
         fontSize:20,
         fontFamily: "Arial",
+    },
+    iconHeader:{ // Style do Icone que fica no start do Header
+        justifyContent: 'flex-start',
+        position: 'absolute',
+        left:0,
+        marginLeft:15
+        
     },
 
 })

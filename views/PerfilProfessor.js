@@ -8,11 +8,12 @@ import {
         Text, 
         StyleSheet,
         TextInput,
+        BackHandler,
         TouchableOpacity,
         Alert,
         ToastAndroid
     } from 'react-native'
-    const initialState = {nome:'', sobrenome: '', usuario:'', senha: '', escola: '', cidade:'', estado: '', abriu: true, idProfessor: ''}
+    const initialState = {nome:'', sobrenome: '', usuario:'', senha: '', escola: '', cidade:'', estado: 'Selecione', abriu: true, idProfessor: ''}
 export default class Register extends Component {
     state = {
         ...initialState
@@ -118,13 +119,13 @@ export default class Register extends Component {
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>
-                    <View style={styles.iconStart}>
+                    <View style={styles.iconHeader}>
                         <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
                             <Icon name="bars" size={30} color='#FFF'  /> 
                         </TouchableOpacity>
                     </View>
                     <View >
-                        <Text style={styles.contentTextHeader} >Seu Perfil</Text>
+                        <Text style={styles.contentTextHeader} >PERFIL</Text>
                     </View>
 
                 </View>
@@ -162,7 +163,7 @@ export default class Register extends Component {
                         style={styles.textDropDown} ref="dropEstado"
                         textStyle={styles.textDropDownText} 
                         dropdownStyle={styles.textDropDownRow} 
-                        value={this.state.estado} defaultValue={"Selecione"} options={this.listEstados} onSelect={(estado) => this.updateEstado(estado)}/> 
+                        value={this.state.estado} defaultValue={this.state.estado} options={this.listEstados} onSelect={(estado) => this.updateEstado(estado)}/> 
                      
                 </View>
                 <View style={styles.contentSend}> 
@@ -242,7 +243,7 @@ const styles = StyleSheet.create({
         paddingLeft:10,
         borderRadius:10,
         borderWidth: 0.1,
-        fontSize: 20
+        fontSize: 15
     },
     textDropDown:{
         color: 'black',
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
     }, 
     textDropDownText:{
         color: 'black',
-        fontSize: 20,
+        fontSize: 15,
     }, 
     textDropDownRow:{
         color: 'black',
@@ -269,7 +270,7 @@ const styles = StyleSheet.create({
     labelButton:{ // Label dos textos
         color: 'black',
         marginLeft:25,
-        fontSize: 20
+        fontSize: 15
     },
     contentSend:{ // Label dos textos
         marginTop: 20,
@@ -303,6 +304,13 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left:0,
         marginLeft:5
+        
+    },
+    iconHeader:{ // Style do Icone que fica no start do Header
+        justifyContent: 'flex-start',
+        position: 'absolute',
+        left:0,
+        marginLeft:15
         
     },
     

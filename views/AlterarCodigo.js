@@ -3,16 +3,33 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
 import ModalDropdown from 'react-native-modal-dropdown'
+import ImagePicker from 'react-native-image-picker'
+import FastImage from 'react-native-fast-image'
+import RNFS from 'react-native-fs'
 import {
         View,
         Text, 
         StyleSheet,
         TextInput,
         TouchableOpacity,
+        Image,
+        BackHandler,
         Alert,
         ToastAndroid
     } from 'react-native'
-    const initialState = {parceiro:'', codigo: '', id:'', quantidade: '',abriu: true}
+const initialState = {parceiro:'', codigo: '', id:'', quantidade: '',abriu: true, previewImg:'', caminhoImg: '',nomeImg: ''}
+const options = {
+    quality       : 1,
+    mediaType    : "photo",
+    cameraType  : "back",
+    allowsEditing : true,
+    noData          : false,
+
+    storageOptions: {
+        skipBackup: true,
+        path: 'images',
+    },
+}; 
 export default class Register extends Component {
     state = {
         ...initialState
@@ -28,12 +45,18 @@ export default class Register extends Component {
                     console.log(data)
                 }).then(data => {
                     console.log(data.data['desc'][0]['quantidade'])
-                    this.setState({
-                        abriu:false, 
-                        id:idProfessor,
-                        parceiro: data.data['desc'][0]['parceiro'],
-                        codigo: data.data['desc'][0]['codigo'],
-                        quantidade: '' + data.data['desc'][0]['quantidade']
+                    const imagePath = `${RNFS.TemporaryDirectoryPath}/${data.data['desc'][0]['nomeArquivo']}`
+                    RNFS.writeFile(imagePath, data.data['desc'][0]['caminhoImg'], 'base64').then(() => {
+                        this.setState({
+                            abriu:false, 
+                            id:idProfessor,
+                            parceiro: data.data['desc'][0]['parceiro'],
+                            codigo: data.data['desc'][0]['codigo'],
+                            quantidade: '' + data.data['desc'][0]['quantidade'],
+                            nomeImg: '' + data.data['desc'][0]['caminho_logo'],
+                            caminhoImg: imagePath,
+                            previewImg: {uri: 'file://' + imagePath },
+                        })
                     })
                     
                 })
@@ -60,6 +83,8 @@ export default class Register extends Component {
                     codigo: this.state.codigo,
                     id:this.state.id,
                     quantidade: this.state.quantidade,
+                    imgPhoto: this.state.caminhoImg,
+                    nomeImg: this.state.nomeImg
                 }, (err, data) => {
                     console.log(err)
                     console.log(data)
@@ -78,6 +103,13 @@ export default class Register extends Component {
         }
         
     }
+    openGallery = () => {
+        ImagePicker.launchImageLibrary(options, (response) => {
+            console.log(response.data)
+            const source = { uri: 'file://' +response.path }
+            this.setState({ previewImg: {uri: 'file://' + response.path }, caminhoImg: response.data });
+          });
+    }
     //Função que verifica se tem algum campo vazio
     verificaCampos = () => {
         try{
@@ -93,6 +125,7 @@ export default class Register extends Component {
         }
     }
     render() {
+        
         if(this.state.abriu){
             this.onLoad()
         }
@@ -125,6 +158,18 @@ export default class Register extends Component {
                     <TextInput style={styles.textContent} keyboardType='numeric' value={this.state.quantidade} placeholder="Quantidade" onChangeText={(quantidade) => this.setState({ quantidade })}/>  
                 </View>        
                 <View style={styles.contentSend}> 
+                    <TouchableOpacity style={styles.buttonFoto}  onPress={this.openGallery}>
+                        <View style={styles.headerButton}>
+                            <Text style={styles.textButton} >Alterar Logo</Text>
+                        </View>
+                    </TouchableOpacity>     
+                </View>
+                <View style={styles.showImagem}> 
+                    <TouchableOpacity style={{height:100}}   onPress={()=>{}}>
+                        <FastImage  key={new Date()} style={{width:100, height:100}} source={this.state.previewImg} />
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.contentSend}> 
                     <TouchableOpacity style={styles.sendButton} onPress={this.saveCodigo}>
                         <View style={styles.headerButton}>
                             <Icon style={styles.iconStart} name="save" size={30} color='black' />
@@ -142,6 +187,14 @@ const styles = StyleSheet.create({
         flex:1,
         width: '100%',
         height: '100%'
+    },
+    showImagem:{
+        marginTop: 10,
+        flexDirection:"row",
+        alignItems: 'center',
+        justifyContent: 'center',
+        resizeMode: 'contain'
+
     },
     header:{ // Style do Header geral
         backgroundColor:'#0066CC',

@@ -40,7 +40,7 @@ export default class Index extends Component {
             <View style={styles.content} >  
                 <View style={styles.header} onLoad>
                     <View >
-                        <Text style={styles.contentTextHeader} >BEM VINDO, ADMIN!</Text>
+                        <Text style={styles.contentTextHeader} >BEM-VINDO, ADMIN!</Text>
                     </View> 
 
                 </View>
@@ -65,6 +65,14 @@ export default class Index extends Component {
                         <View style={styles.headerButton}>
                             <Icon style={styles.iconStart} name="check" size={30} color='black' />
                             <Text style={styles.textButton} >Cadastrar Codigo</Text>
+                        </View>
+                    </TouchableOpacity>  
+                </View>
+                <View style={styles.content_buttons}> 
+                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('ListaFaleConosco')}>
+                        <View style={styles.headerButton}>
+                            <Icon style={styles.iconStart} name="phone" size={30} color='black' />
+                            <Text style={styles.textButton} >Fale Conosco</Text>
                         </View>
                     </TouchableOpacity>  
                 </View>

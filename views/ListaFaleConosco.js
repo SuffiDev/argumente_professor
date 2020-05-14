@@ -28,12 +28,10 @@ function Item({ title, id, navigate }) {
             alignItems: 'center',
             justifyContent: 'center',
             height: 40
-        }} onPress={() => Alert.alert( 'Dados de Professores','O que deseja fazer?',[
-            {text: 'Editar', onPress: () => navigate.editarProfessor(id)},
-            {text: 'Excluir', onPress:() => navigate.excluirProfessor(id)}])}>
+        }} onPress={() => navigate.editarFaleConosco(id)}>
                 <Text style={{
                     color: 'black',
-                    fontSize: 20
+                    fontSize: 15
                 }}>{title}</Text>
             </TouchableOpacity>
         </View>
@@ -43,37 +41,34 @@ export default class Register extends Component {
     state = {
         ...initialState
     }
-    excluirProfessor = async (id) => {
-        try {
-            await axios.post('http://178.128.148.63:3000/deletaProfessor',{  
-                    id:id 
-                }, (err, data) => {
-                }).then(data => {
-                    console.log(data.data['desc'])
-                    if(data.data['status'] == 'ok'){
-                        Alert.alert( 'Excluir professor','Excluido com sucesso!',[{text: 'OK', onPress: () => {}}])
-                        this.getRedacoes()
-                    }
-                    
-                })
-        } catch (error) {
-            console.log(error)
-        // Error saving data
-        }
-    }
-    editarProfessor = async (id) =>{
-        this.setState({...initialState})
-        this.props.navigation.navigate('AlterarProfessor',{'id':id})
+    //excluirFaleConosco = async (id) => {
+    //    try {
+    //        await axios.post('http://178.128.148.63:3000/deletaFaleConosco',{  
+    //                id:id 
+    //            }, (err, data) => {
+    //            }).then(data => {
+    //                console.log(data.data['desc'])
+    //                if(data.data['status'] == 'ok'){
+    //                    Alert.alert( 'Fale Conosco','Excluido com sucesso!',[{text: 'OK', onPress: () => {}}])
+    //                    this.getRedacoes()
+    //                }
+    //                
+    //            })
+    //    } catch (error) {
+    //        console.log(error)
+    //    // Error saving data
+    //    }
+    //}
+    editarFaleConosco = async (id) =>{
+        this.props.navigation.navigate('DetalheFaleConosco',{'id':id})
     }
     componentDidMount () {
-        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
-          this.getRedacoes();
-        });
+        this.getDados()
     }
-    getRedacoes = async () => {
+    getDados = async () => {
         try {
-            this.atualizaStatus()
-            await axios.post('http://178.128.148.63:3000/getProfessores',{   
+            console.log('entrou')
+            await axios.post('http://178.128.148.63:3000/getFaleConosco',{   
                 }, (err, data) => {
                 }).then(data => {
                     console.log(data.data['desc'])
@@ -82,7 +77,12 @@ export default class Register extends Component {
                     for(let i =0; i< data.data['desc'].length; i++){
                         currentItem = data.data['desc'][i]
                         console.log(currentItem)
-                        listItems.push({id: currentItem['id'], title: currentItem['nome'] + ' ' + currentItem['sobrenome']})
+                        let tipo = ''
+                        if(currentItem['tipo'] == 'aluno')
+                            tipo = 'Enviado pelo aluno: '
+                        else
+                            tipo = 'Enviado pelo professor: '
+                        listItems.push({id: currentItem['id'], title: tipo + currentItem['nome']})
                     }
                     this.setState({registros:listItems})
                     
@@ -94,9 +94,6 @@ export default class Register extends Component {
     }
     
     render() {
-        if(this.state.abriu){
-            this.getRedacoes()
-        }
         return(
             <View style={styles.content} >  
                 <ScrollView>
@@ -107,7 +104,7 @@ export default class Register extends Component {
                                 </TouchableOpacity>
                             </View>
                             <View >
-                                <Text style={styles.contentTextHeader} >PROFESSORES CADASTRADOS</Text>
+                                <Text style={styles.contentTextHeader} >FALE CONOSCO</Text>
                             </View>
 
                         </View>
@@ -122,20 +119,6 @@ export default class Register extends Component {
                                 renderItem={({ item }) => <Item style={{borderWidth: 1}}title={item.title} id={item.id} navigate={this}/>}
                                 keyExtractor={item => item.id}
                             />
-                        </View>
-
-                        <View style={styles.content_buttons}> 
-                            <TouchableOpacity style={styles.content_buttons} onPress={() => 
-                                {
-                                    this.setState({...initialState})
-                                    this.props.navigation.navigate('CadastrarProfessor')
-                                }
-                            }>
-                                <View style={styles.headerButton}>
-                                    <Icon style={styles.iconStart} name="plus" size={30} color='black' />
-                                    <Text style={styles.textButton} >Adicionar Professor</Text>
-                                </View>
-                            </TouchableOpacity>      
                         </View>
                 </ScrollView> 
             </View> 
@@ -162,7 +145,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         position: 'absolute',
         left:0,
-        marginLeft:10
+        marginLeft:15
         
     },
     contentTextHeader:{ // Style do Texto que fica no centro do header

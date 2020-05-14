@@ -10,6 +10,7 @@ import {
         TextInput,
         TouchableOpacity,
         Alert,
+        BackHandler,
         ToastAndroid
     } from 'react-native'
     const initialState = {nome:'', sobrenome: '', usuario:'', senha: '', escola: '', cidade:'', estado: '', abriu: true, idProfessor: ''}

@@ -8,6 +8,7 @@ import {
         Text, 
         StyleSheet,
         TouchableOpacity,
+        BackHandler,
         Alert,
         ScrollView,
         ToastAndroid,

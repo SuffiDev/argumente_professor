@@ -8,6 +8,7 @@ import {
         Text, 
         StyleSheet,
         TextInput,
+        BackHandler,
         TouchableOpacity,
         Alert,
         ToastAndroid
@@ -15,6 +16,7 @@ import {
     
     const initialState = {nome:'', sobreNome: '', escola:'', cidade: '', estado: '', usuario: '', senha: '',abriu: true}
 export default class Register extends Component {
+    //fim do bloco
     state = {
         ...initialState
     }

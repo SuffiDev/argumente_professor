@@ -7,12 +7,14 @@ import {
         View,
         Text, 
         StyleSheet,
+        BackHandler,
         TextInput,
         TouchableOpacity,
+        Dimensions,
         Alert,
         ToastAndroid
     } from 'react-native'
-    const initialState = {tema:'', dias: '', mes:'', ano: '', apoioPdf: '', apoioWeb:'', apoioVideo: '', abriu: true}
+    const initialState = {tema:'', dias: '', descricao: '', mes:'', ano: '', apoioPdf: '', apoioWeb:'', apoioVideo: '', abriu: true}
 export default class Register extends Component {
     listMes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"]
     listAno = ["2020","2021","2022","2023","2024","2025","2026","2027","2028","2029"]
@@ -32,6 +34,7 @@ export default class Register extends Component {
                     apoioPdf: this.state.apoioPdf,
                     apoioWeb: this.state.apoioWeb,
                     apoioVideo: this.state.apoioVideo,
+                    descricao: this.state.descricao,
                 }, (err, data) => {
                     console.log(err)
                     console.log(data)
@@ -61,7 +64,7 @@ export default class Register extends Component {
         try{
             console.log(this.state)
             if( this.state.tema == null || this.state.dias == null || this.state.mes == null ||
-            this.state.ano == null || this.state.apoioPdf == undefined || this.state.apoioWeb == null || this.state.apoioVideo == undefined){
+            this.state.ano == null || this.state.descricao == undefined || this.state.apoioPdf == undefined || this.state.apoioWeb == null || this.state.apoioVideo == undefined){
                 return false
             }else{
                 return true
@@ -91,7 +94,7 @@ export default class Register extends Component {
                         </TouchableOpacity>
                     </View>
                     <View >
-                        <Text style={styles.contentTextHeader} >Novo Tema</Text>
+                        <Text style={styles.contentTextHeader} >NOVO TEMA</Text>
                     </View>
 
                 </View>
@@ -101,6 +104,19 @@ export default class Register extends Component {
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Tema: </Text>
                     <TextInput controlled={true} style={styles.textContent} value={this.state.tema} placeholder="Tema" onChangeText={(tema) => this.setState({ tema })}/>  
+                </View>
+                <View style={{width: '100%'}}>
+                    <View style={styles.contentButtons}>
+                    <Text style={styles.labelButton} >Corpo: </Text>
+                        <TextInput
+                                style={{borderColor: '#0066CC', borderWidth: 1, borderRadius:10, flex: 1 ,marginRight: 20}}
+                                onChangeText={(descricao) => this.setState({ descricao })}
+                                multiline={true}
+                                numberOfLines={4}
+                                textAlignVertical = "top"
+                                placeholder="Descrição: "
+                                /> 
+                    </View>
                 </View>
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Dias: </Text>
@@ -205,7 +221,9 @@ const styles = StyleSheet.create({
     contentButtons:{
         flexDirection: "row",
         alignItems: "center",
-        marginTop: 10
+        borderColor: 'gray',
+        width:'100%',
+        marginTop: 10,
     },
     textContent:{
         color: 'black',
@@ -214,6 +232,7 @@ const styles = StyleSheet.create({
         paddingLeft:10,
         borderRadius:10,
         borderWidth: 0.1,
+        marginRight: 20,
         fontSize: 15
     },
     textDropDown:{
@@ -240,7 +259,7 @@ const styles = StyleSheet.create({
     },
     labelButton:{ // Label dos textos
         color: 'black',
-        marginLeft:25,
+        marginLeft:15,
         fontSize: 20
     },
     contentSend:{ // Label dos textos

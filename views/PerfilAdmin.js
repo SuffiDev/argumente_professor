@@ -10,6 +10,7 @@ import {
         TextInput,
         TouchableOpacity,
         Alert,
+        BackHandler,
         ToastAndroid
     } from 'react-native'
     const initialState = {nome:'', sobrenome: '', usuario:'', senha: '', escola: '', cidade:'', estado: '', abriu: true, idProfessor: ''}
@@ -124,7 +125,7 @@ export default class Register extends Component {
                         </TouchableOpacity>
                     </View>
                     <View >
-                        <Text style={styles.contentTextHeader} >Seu Perfil</Text>
+                        <Text style={styles.contentTextHeader} >PERFIL</Text>
                     </View>
 
                 </View>

@@ -10,6 +10,7 @@ import {
         TouchableOpacity,
         Alert,
         ScrollView,
+        BackHandler,
         ToastAndroid,
         FlatList
     } from 'react-native'
@@ -41,6 +42,7 @@ function Item({ title, id, navigate }) {
     );
     }
 export default class Register extends Component {
+    //fim do bloco
     state = {
         ...initialState
     }
