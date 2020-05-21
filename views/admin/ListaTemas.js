@@ -3,19 +3,19 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
 import ModalDropdown from 'react-native-modal-dropdown'
-import { NavigationActions } from 'react-navigation';
 import {
         View,
         Text, 
         StyleSheet,
         TouchableOpacity,
         Alert,
-        BackHandler,
         ScrollView,
-        ToastAndroid,
         FlatList
     } from 'react-native'
-const initialState = {registros: [],abriu: true}
+const initialState = {registros: [],abriu: false}
+
+
+
 function Item({ title, id, navigate }) {
     return (
         <View >
@@ -28,9 +28,9 @@ function Item({ title, id, navigate }) {
             alignItems: 'center',
             justifyContent: 'center',
             height: 40
-        }} onPress={() => Alert.alert( 'Dados de Professores','O que deseja fazer?',[
-            {text: 'Editar', onPress: () => navigate.editarProfessor(id)},
-            {text: 'Excluir', onPress:() => navigate.excluirProfessor(id)}])}>
+        }} onPress={() => Alert.alert( 'Temas','O que deseja fazer?',[
+            {text: 'Editar', onPress: () => navigate.editarTema(id)},
+            {text: 'Excluir', onPress:() => navigate.excluirTema(id)}])}>
                 <Text style={{
                     color: 'black',
                     fontSize: 20
@@ -40,12 +40,13 @@ function Item({ title, id, navigate }) {
     );
     }
 export default class Register extends Component {
+    //fim do bloco
     state = {
         ...initialState
     }
-    excluirProfessor = async (id) => {
+    excluirTema = async (id) => {
         try {
-            await axios.post('http://178.128.148.63:3000/deletaProfessor',{  
+            await axios.post('http://178.128.148.63:3000/deletaTema',{  
                     id:id 
                 }, (err, data) => {
                 }).then(data => {
@@ -61,28 +62,23 @@ export default class Register extends Component {
         // Error saving data
         }
     }
-    editarProfessor = async (id) =>{
+    editarTema = async (id) =>{
         this.setState({...initialState})
-        this.props.navigation.navigate('AlterarProfessor',{'id':id})
-    }
-    componentDidMount () {
-        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
-          this.getRedacoes();
-        });
+        this.props.navigation.navigate('EditaTema',{'id':id})
     }
     getRedacoes = async () => {
         try {
-            this.atualizaStatus()
-            await axios.post('http://178.128.148.63:3000/getProfessores',{   
+            await axios.post('http://178.128.148.63:3000/getTemas',{   
                 }, (err, data) => {
                 }).then(data => {
                     console.log(data.data['desc'])
                     let listItems = []
                     let currentItem
+                    this.setState({abriu:true})
                     for(let i =0; i< data.data['desc'].length; i++){
                         currentItem = data.data['desc'][i]
                         console.log(currentItem)
-                        listItems.push({id: currentItem['id'], title: currentItem['nome'] + ' ' + currentItem['sobrenome']})
+                        listItems.push({id: currentItem['id'], title: currentItem['tema']})
                     }
                     this.setState({registros:listItems})
                     
@@ -92,9 +88,8 @@ export default class Register extends Component {
         // Error saving data
         }
     }
-    
     render() {
-        if(this.state.abriu){
+        if(!this.state.abriu){
             this.getRedacoes()
         }
         return(
@@ -107,7 +102,7 @@ export default class Register extends Component {
                                 </TouchableOpacity>
                             </View>
                             <View >
-                                <Text style={styles.contentTextHeader} >PROFESSORES CADASTRADOS</Text>
+                                <Text style={styles.contentTextHeader} >TEMAS CADASTRADOS</Text>
                             </View>
 
                         </View>
@@ -125,15 +120,10 @@ export default class Register extends Component {
                         </View>
 
                         <View style={styles.content_buttons}> 
-                            <TouchableOpacity style={styles.content_buttons} onPress={() => 
-                                {
-                                    this.setState({...initialState})
-                                    this.props.navigation.navigate('CadastrarProfessor')
-                                }
-                            }>
+                            <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('CadastrarTema')}>
                                 <View style={styles.headerButton}>
                                     <Icon style={styles.iconStart} name="plus" size={30} color='black' />
-                                    <Text style={styles.textButton} >Adicionar Professor</Text>
+                                    <Text style={styles.textButton} >Adicionar Tema</Text>
                                 </View>
                             </TouchableOpacity>      
                         </View>

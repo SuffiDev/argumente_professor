@@ -10,89 +10,49 @@ import {
         BackHandler,
         TextInput,
         TouchableOpacity,
+        Dimensions,
         Alert,
         ToastAndroid
     } from 'react-native'
-    const initialState = {tema:'', dias: '',id:'', mes:'', descricao: '', ano: '', apoioPdf: '', apoioWeb:'', apoioVideo: '', abriu: true}
+    const initialState = {tema:'', semana: '', descricao: '', mes:'', ano: '', apoioPdf: '', apoioWeb:'', apoioVideo: '', abriu: true}
 export default class Register extends Component {
+    listSemana = ['Semana 1','Semana 2','Semana 3','Semana 4','Semana 5','Semana 6','Semana 7','Semana 8','Semana 9','Semana 10','Semana 11','Semana 12','Semana 13','Semana 14','Semana 15','Semana 16','Semana 17','Semana 18','Semana 19','Semana 20','Semana 21','Semana 22','Semana 23','Semana 24','Semana 25','Semana 26','Semana 27','Semana 28','Semana 29','Semana 30','Semana 31','Semana 32','Semana 33','Semana 34','Semana 35','Semana 36','Semana 37','Semana 38','Semana 39','Semana 40','Semana 41','Semana 42','Semana 43','Semana 44','Semana 45','Semana 46','Semana 47','Semana 48','Semana 49','Semana 50','Semana 51','Semana 52','Semana 53']
     listMes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"]
     listAno = ["2020","2021","2022","2023","2024","2025","2026","2027","2028","2029"]
     state = {
         ...initialState
     }
-    getMes = () => {
-        if(this.state.mes == 1)
-            return 'Janeiro'
-        if(this.state.mes == 1)
-            return 'Fevereiro'
-        if(this.state.mes == 1)
-            return 'Março'
-        if(this.state.mes == 1)
-            return 'Abril'
-        if(this.state.mes == 1)
-            return 'Maio'
-        if(this.state.mes == 1)
-            return 'Junho'
-        if(this.state.mes == 1)
-            return 'Julho'
-        if(this.state.mes == 1)
-            return 'Agosto'
-        if(this.state.mes == 1)
-            return 'Setembro'
-        if(this.state.mes == 1)
-            return 'Outubro'
-        if(this.state.mes == 1)
-            return 'Novembro'
-        if(this.state.mes == 1)
-            return 'Dezembro'
-    }
-    onLoad = async () => {
-        try {
-            let idProfessor = this.props.navigation.getParam('id', 0)
-            let retornoReq = await axios.post('http://178.128.148.63:3000/getTema',{                   
-                    id: idProfessor,
-                }, (err, data) => {
-                    console.log(err)
-
-                    console.log(data)
-                }).then(data => {
-                    this.setState({
-                        abriu:false, 
-                        id:idProfessor,
-                        tema: data.data['desc'][0]['tema'],
-                        dias: data.data['desc'][0]['dias'],
-                        mes: data.data['desc'][0]['mes'],
-                        ano: data.data['desc'][0]['ano'],
-                        apoioPdf: data.data['desc'][0]['apoio_pdf'],
-                        apoioWeb: data.data['desc'][0]['apoio_web'],
-                        apoioVideo: data.data['desc'][0]['apoio_video'],
-                        descricao: data.data['desc'][0]['descricao']
-                    })
-                    
-                })
-        } catch (error) {
-            console.log(error)
-        // Error saving data
-        }
-        
-    }
     //Função que salva o tema
     saveTema = async () => {
-        if(this.state.abriu){
-            this.onLoad()
-        }
         try{
             if(this.verificaCampos()){
                 ToastAndroid.show('Por favor, aguarde...', ToastAndroid.SHORT)
-                await axios.post('http://178.128.148.63:3000/editaTema',{           
+                let semanaAtual = this.state.semana.replace('Semana ','')
+                let linkYoutube = ''
+                let linkWeb = ''
+                let linkPdf = ''
+                if (this.state.apoioPdf[0] == 'w')
+                    linkPdf = 'http://'+this.state.apoioPdf
+                else
+                    linkPdf = this.state.apoioPdf
+
+                if (this.state.apoioWeb[0] == 'w')
+                    linkWeb = 'http://'+this.state.apoioWeb
+                else
+                    linkWeb = this.state.apoioWeb
+
+                if (this.state.apoioVideo[0] == 'w')
+                    linkYoutube = 'http://'+this.state.apoioVideo
+                else
+                    linkYoutube = this.state.apoioVideo
+
+                await axios.post('http://178.128.148.63:3000/salvaTema',{           
                     tema: this.state.tema,
-                    id:this.state.id,
-                    dias: this.state.dias,
-                    mes: this.state.mes,
+                    semana: semanaAtual,
                     ano: this.state.ano,
-                    apoioPdf: this.state.apoioPdf,
-                    apoioWeb: this.state.apoioWeb,
-                    apoioVideo: this.state.apoioVideo,
+                    apoioPdf: linkPdf,
+                    apoioWeb: linkWeb,
+                    apoioVideo: linkYoutube,
                     descricao: this.state.descricao,
                 }, (err, data) => {
                     console.log(err)
@@ -122,8 +82,8 @@ export default class Register extends Component {
     verificaCampos = () => {
         try{
             console.log(this.state)
-            if( this.state.tema == null || this.state.dias == null || this.state.mes == null ||
-            this.state.ano == null || this.state.apoioPdf == undefined || this.state.apoioWeb == null || this.state.apoioVideo == undefined){
+            if( this.state.tema == null || this.state.semana == null || 
+            this.state.ano == null || this.state.descricao == undefined || this.state.apoioPdf == undefined || this.state.apoioWeb == null || this.state.apoioVideo == undefined){
                 return false
             }else{
                 return true
@@ -133,9 +93,14 @@ export default class Register extends Component {
             Alert.alert( 'Tema',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
         }
     }
-    updateMes(estado) {
+    //updateMes(estado) {
+    //    this.setState({
+    //        mes: this.listMes[estado]
+    //    })
+    //}
+    updateSemana(semana) {
         this.setState({
-            mes: this.listMes[estado]
+            semana: this.listSemana[semana]
         })
     }
     updateAno(estado) {
@@ -144,9 +109,6 @@ export default class Register extends Component {
         })
     }
     render() {
-        if(this.state.abriu){
-            this.onLoad()
-        }
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>
@@ -156,7 +118,7 @@ export default class Register extends Component {
                         </TouchableOpacity>
                     </View>
                     <View >
-                        <Text style={styles.contentTextHeader} >TEMA</Text>
+                        <Text style={styles.contentTextHeader} >NOVO TEMA</Text>
                     </View>
 
                 </View>
@@ -173,26 +135,20 @@ export default class Register extends Component {
                         <TextInput
                                 style={{borderColor: '#0066CC', borderWidth: 1, borderRadius:10, flex: 1 ,marginRight: 20}}
                                 onChangeText={(descricao) => this.setState({ descricao })}
-                                value={this.state.descricao}
                                 multiline={true}
-                                numberOfLines={2}
+                                numberOfLines={4}
                                 textAlignVertical = "top"
                                 placeholder="Descrição: "
                                 /> 
                     </View>
                 </View>
                 <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Dias: </Text>
-                    <TextInput style={styles.textContent} keyboardType='numeric' value={this.state.dias} placeholder="Dias (Use , como separador. Ex: 01,02,03,04)" onChangeText={(dias) => this.setState({ dias })}/>  
-                </View>
-                <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Mês: </Text>
+                    <Text style={styles.labelButton} >Semana do Ano: </Text>
                     <ModalDropdown 
-                        style={styles.textDropDown} ref="dropMes"
+                        style={styles.textDropDown} ref="dropDias"
                         textStyle={styles.textDropDownText} 
                         dropdownStyle={styles.textDropDownRow} 
-                        value={this.state.mes} defaultValue={this.listMes[this.state.mes -1]} options={this.listMes} onSelect={(mes) => this.updateMes(mes)}/> 
-                     
+                        value={this.state.semana} defaultValue={"Selecione"} options={this.listSemana} onSelect={(semana) => this.updateSemana(semana)}/> 
                 </View>
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Ano: </Text>
@@ -200,7 +156,7 @@ export default class Register extends Component {
                         style={styles.textDropDown} ref="dropAno"
                         textStyle={styles.textDropDownText} 
                         dropdownStyle={styles.textDropDownRow} 
-                        value={this.state.ano} defaultValue={this.state.ano} options={this.listAno} onSelect={(ano) => this.updateAno(ano)}/> 
+                        value={this.state.ano} defaultValue={"Selecione"} options={this.listAno} onSelect={(ano) => this.updateAno(ano)}/> 
                      
                 </View>           
 
@@ -284,7 +240,9 @@ const styles = StyleSheet.create({
     contentButtons:{
         flexDirection: "row",
         alignItems: "center",
-        marginTop: 10
+        borderColor: 'gray',
+        width:'100%',
+        marginTop: 10,
     },
     textContent:{
         color: 'black',
@@ -308,7 +266,7 @@ const styles = StyleSheet.create({
     }, 
     textDropDownRow:{
         color: 'black',
-        fontSize: 20,
+        fontSize: 15,
         width: 180
     }, 
     textButton:{ // Texto dos botões que vão ficar no corpo da tela
@@ -316,12 +274,12 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft:25,
         borderBottomWidth: 1,
-        fontSize: 20
+        fontSize: 15
     },
     labelButton:{ // Label dos textos
         color: 'black',
-        marginLeft:25,
-        fontSize: 20
+        marginLeft:15,
+        fontSize: 15
     },
     contentSend:{ // Label dos textos
         marginTop: 20,

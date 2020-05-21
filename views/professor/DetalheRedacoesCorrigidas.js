@@ -8,13 +8,10 @@ import {
         Text, 
         StyleSheet,
         TouchableOpacity,
-        Alert,
-        BackHandler,
         ScrollView,
-        ToastAndroid,
         FlatList
     } from 'react-native'
-const initialState = {registros: [],abriu: true}
+const initialState = {registros: [],abriu: false}
 
 
 function Item({ title, id, navigate }) {
@@ -32,7 +29,7 @@ function Item({ title, id, navigate }) {
         }} onPress={() => navigate.props.navigation.navigate('DetalheCorrecao',{'id':id})}>
                 <Text style={{
                     color: 'black',
-                    fontSize: 20
+                    fontSize: 15
                 }}>{title}</Text>
             </TouchableOpacity>
         </View>
@@ -42,19 +39,17 @@ export default class Register extends Component {
     state = {
         ...initialState
     }
-    atualizaStatus = () => {
-        this.setState({abriu:false})
-    }
     getRedacoes = async () => {
         try {
-            this.atualizaStatus()
             let idRedacao = this.props.navigation.getParam('id', 0) 
+            console.log('id do professor: ' + idRedacao)
             await axios.post('http://178.128.148.63:3000/getCorrecoesRedacao',{      
                 id: idRedacao 
                 }, (err, data) => {
                     console.log(err)
                     console.log(data)
                 }).then(data => {
+                    this.setState({abriu:true})
                     let listItems = []
                     let currentItem
                     console.log(data.data['desc'])
@@ -77,7 +72,7 @@ export default class Register extends Component {
     }
     
     render() {
-        if(this.state.abriu){
+        if(!this.state.abriu){
             this.getRedacoes()
         }
         return(

@@ -3,17 +3,20 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
 import ModalDropdown from 'react-native-modal-dropdown'
+
 import {
         View,
+        BackHandler,
         Text, 
         StyleSheet,
         TouchableOpacity,
-        BackHandler,
         Alert,
         ToastAndroid,
         FlatList
     } from 'react-native'
-const initialState = {registros: [],abriu: true}
+const initialState = {registros: [],abriu: false}
+
+
 
 
 function Item({ title, id, navigate }) {
@@ -28,7 +31,7 @@ function Item({ title, id, navigate }) {
             alignItems: 'center',
             justifyContent: 'center',
             height: 40
-        }} onPress={() => navigate.props.navigation.navigate('DetalheRedacoesCorrigidas',{'id':id})}>
+        }} onPress={() => navigate.props.navigation.navigate('FormNovaRedacao',{'id':id})}>
                 <Text style={{
                     color: 'black',
                     fontSize: 15
@@ -44,19 +47,20 @@ export default class Register extends Component {
     atualizaStatus = () => {
         this.setState({abriu:false})
     }
+    
     getRedacoes = async () => {
         try {
             this.atualizaStatus()
             const idProfessor = await AsyncStorage.getItem('@idAdmin')
             let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
-            console.log(idProfessorInt)
-            await axios.post('http://178.128.148.63:3000/getRedacoesCorrigidas',{      
-                id: idProfessorInt 
+            await axios.post('http://178.128.148.63:3000/getNovasRedacoes',{       
+                id:idProfessorInt
                 }, (err, data) => {
                     console.log(err)
                     console.log(data)
                 }).then(data => {
                     let listItems = []
+                    this.setState({abriu:true})
                     let currentItem
                     console.log(data.data['desc'])
                     for(let i =0; i< data.data['desc'].length; i++){
@@ -71,18 +75,10 @@ export default class Register extends Component {
             console.log(error)
         // Error saving data
         }
-    }
-
-    componentDidMount () {
-        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
-          this.setState({...initialState});
-        });
-    }
-    
+    }    
     render() {
-        if(this.state.abriu){
+        if(!this.state.abriu)
             this.getRedacoes()
-        }
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>
@@ -92,7 +88,7 @@ export default class Register extends Component {
                         </TouchableOpacity>
                     </View>
                     <View >
-                        <Text style={styles.contentTextHeader} >REDAÇÕES CORRIGIDAS</Text>
+                        <Text style={styles.contentTextHeader} >NOVAS REDAÇÕES</Text>
                     </View>
 
                 </View>

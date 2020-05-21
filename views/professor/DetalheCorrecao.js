@@ -2,26 +2,18 @@ import React, {Component, Fragment} from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
-import ImagePicker from 'react-native-image-picker'
 import { RNPhotoEditor } from 'react-native-photo-editor'
 import ImgToBase64 from 'react-native-image-base64'
 import RNFS from 'react-native-fs'
 import {
         View,
         Text, 
-        ImageBackground, 
         StyleSheet,
-        TextInput,
         Image,
-        BackHandler,
-        Linking,
-        Button,
-        TouchableHighlight,
         ToastAndroid,
-        Alert,
         TouchableOpacity
     } from 'react-native'
-    const initialState = {abriu: true, aluno: '', idRedacao: '', nota: '',caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
+    const initialState = {abriu: false, aluno: '', idRedacao: '', nota: '',caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
 export default class Register extends Component {
     
     state = {
@@ -64,6 +56,7 @@ export default class Register extends Component {
         try {
             let idRedacao = this.props.navigation.getParam('id','0')   
             console.log('id da redacao: ' + idRedacao)
+            ToastAndroid.show('Por favor, aguarde...', ToastAndroid.LONG)
             await axios.post('http://178.128.148.63:3000/getRedacaoId',{                   
                     id: idRedacao
                 }, (err, data) => {
@@ -71,7 +64,7 @@ export default class Register extends Component {
                     console.log(data)
                 }).then(data => {
                     console.log(data)
-                    this.setState({abriu:false})
+                    this.setState({abriu:true})
                     console.log('entrou')
                     this.loadItems(data)
                     
@@ -82,10 +75,6 @@ export default class Register extends Component {
         // Error saving data
         }
         
-    }
-
-    componentDidMount () {
-        this.getRedacao();
     }
     //Função que pega os dados e envia para a api
     sendRedacao = () => {
@@ -101,7 +90,7 @@ export default class Register extends Component {
         }
     }
     render() {
-        if(this.state.abriu){
+        if(!this.state.abriu){
             this.getRedacao()
         }
         return(

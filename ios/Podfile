@@ -36,6 +36,12 @@ target 'argumente_admin' do
 
   pod 'RNPhotoEditor', :path => '../node_modules/react-native-photo-editor'
 
+  pod 'RNAudioRecord', :path => '../node_modules/react-native-audio-record'
+
+  pod 'RNSound', :path => '../node_modules/react-native-sound'
+
+  pod 'RNAudio', :path => '../node_modules/react-native-audio'
+
   target 'argumente_adminTests' do
     inherit! :search_paths
     # Pods for testing

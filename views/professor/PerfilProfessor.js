@@ -8,12 +8,12 @@ import {
         Text, 
         StyleSheet,
         TextInput,
+        BackHandler,
         TouchableOpacity,
         Alert,
-        BackHandler,
         ToastAndroid
     } from 'react-native'
-    const initialState = {nome:'', sobrenome: '', usuario:'', senha: '', escola: '', cidade:'', estado: '', abriu: true, idProfessor: ''}
+    const initialState = {nome:'', sobrenome: '', usuario:'', senha: '', escola: '', cidade:'', estado: 'Selecione', abriu: false, idProfessor: ''}
 export default class Register extends Component {
     state = {
         ...initialState
@@ -24,15 +24,16 @@ export default class Register extends Component {
         try {
             const idProfessor = await AsyncStorage.getItem('@idAdmin')
             let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
-            let retornoReq = await axios.post('http://34.70.122.134:3000/getProfessor',{                   
+            let retornoReq = await axios.post('http://178.128.148.63:3000/getProfessor',{                   
                     id: idProfessorInt,
                 }, (err, data) => {
                     console.log(err)
 
                     console.log(data)
                 }).then(data => {
-                    this.setState({abriu:false, idProfessor: idProfessorInt})
+                    this.setState({abriu:true, idProfessor: idProfessorInt})
                     console.log('entrou')
+
                     console.log(data.data['desc'])
                     this.loadItems(data)
                     
@@ -67,7 +68,7 @@ export default class Register extends Component {
                 await axios.post('http://178.128.148.63:3000/salvaProfessor',{           
                     id: this.state.idProfessor,
                     nome: this.state.nome,
-                    sobreNome: this.state.sobrenome,
+                    sobrenome: this.state.sobrenome,
                     usuario: this.state.usuario,
                     senha: this.state.senha,
                     idade: this.state.idade,
@@ -113,15 +114,15 @@ export default class Register extends Component {
         })
     }
     render() {
-        if(this.state.abriu){
+        if(!this.state.abriu){
             this.onLoad()
         }
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>
-                    <View style={styles.iconStart}>
-                        <TouchableOpacity  onPress={() => this.props.navigation.navigate('IndexAdmin')}>
-                            <Icon name="arrow-left" size={30} color='#FFF'  /> 
+                    <View style={styles.iconHeader}>
+                        <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
+                            <Icon name="bars" size={30} color='#FFF'  /> 
                         </TouchableOpacity>
                     </View>
                     <View >
@@ -163,7 +164,7 @@ export default class Register extends Component {
                         style={styles.textDropDown} ref="dropEstado"
                         textStyle={styles.textDropDownText} 
                         dropdownStyle={styles.textDropDownRow} 
-                        value={this.state.estado} defaultValue={"Selecione"} options={this.listEstados} onSelect={(estado) => this.updateEstado(estado)}/> 
+                        value={this.state.estado} defaultValue={this.state.estado} options={this.listEstados} onSelect={(estado) => this.updateEstado(estado)}/> 
                      
                 </View>
                 <View style={styles.contentSend}> 
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         position: 'absolute',
         left:0,
-        marginLeft:10
+        marginLeft:5
         
     },
     contentTextHeader:{ // Style do Texto que fica no centro do header
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
         paddingLeft:10,
         borderRadius:10,
         borderWidth: 0.1,
-        fontSize: 20
+        fontSize: 15
     },
     textDropDown:{
         color: 'black',
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
     }, 
     textDropDownText:{
         color: 'black',
-        fontSize: 20,
+        fontSize: 15,
     }, 
     textDropDownRow:{
         color: 'black',
@@ -265,12 +266,12 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft:25,
         borderBottomWidth: 1,
-        fontSize: 20
+        fontSize: 15
     },
     labelButton:{ // Label dos textos
         color: 'black',
         marginLeft:25,
-        fontSize: 20
+        fontSize: 15
     },
     contentSend:{ // Label dos textos
         marginTop: 20,
@@ -297,7 +298,21 @@ const styles = StyleSheet.create({
     },
     textButton:{ // Texto dos botões que vão ficar no corpo da tela
         color: 'black',        
-        fontSize: 20
+        fontSize: 15
+    },
+    iconStart:{ // Style do Icone que fica no start do Header
+        justifyContent: 'flex-start',
+        position: 'absolute',
+        left:0,
+        marginLeft:5
+        
+    },
+    iconHeader:{ // Style do Icone que fica no start do Header
+        justifyContent: 'flex-start',
+        position: 'absolute',
+        left:0,
+        marginLeft:15
+        
     },
     
 })

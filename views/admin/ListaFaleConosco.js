@@ -3,19 +3,19 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
 import ModalDropdown from 'react-native-modal-dropdown'
+import { NavigationActions } from 'react-navigation';
 import {
         View,
         Text, 
         StyleSheet,
         TouchableOpacity,
-        BackHandler,
         Alert,
+        BackHandler,
         ScrollView,
         ToastAndroid,
         FlatList
     } from 'react-native'
-const initialState = {registros: [],abriu: true}
-
+const initialState = {registros: [],abriu: false}
 function Item({ title, id, navigate }) {
     return (
         <View >
@@ -28,12 +28,10 @@ function Item({ title, id, navigate }) {
             alignItems: 'center',
             justifyContent: 'center',
             height: 40
-        }} onPress={() => Alert.alert( 'Códigos','O que deseja fazer?',[
-            {text: 'Editar', onPress: () => navigate.editarCodigo(id)},
-            {text: 'Excluir', onPress:() => navigate.excluirCodigo(id)}])}>
+        }} onPress={() => navigate.editarFaleConosco(id)}>
                 <Text style={{
                     color: 'black',
-                    fontSize: 20
+                    fontSize: 15
                 }}>{title}</Text>
             </TouchableOpacity>
         </View>
@@ -43,42 +41,46 @@ export default class Register extends Component {
     state = {
         ...initialState
     }
-    atualizaStatus = () => {
-        this.setState({abriu:false})
+    //excluirFaleConosco = async (id) => {
+    //    try {
+    //        await axios.post('http://178.128.148.63:3000/deletaFaleConosco',{  
+    //                id:id 
+    //            }, (err, data) => {
+    //            }).then(data => {
+    //                console.log(data.data['desc'])
+    //                if(data.data['status'] == 'ok'){
+    //                    Alert.alert( 'Fale Conosco','Excluido com sucesso!',[{text: 'OK', onPress: () => {}}])
+    //                    this.getRedacoes()
+    //                }
+    //                
+    //            })
+    //    } catch (error) {
+    //        console.log(error)
+    //    // Error saving data
+    //    }
+    //}
+    editarFaleConosco = async (id) =>{
+        this.props.navigation.navigate('DetalheFaleConosco',{'id':id})
     }
-    excluirCodigo = async (id) => {
+    getDados = async () => {
         try {
-            await axios.post('http://178.128.148.63:3000/deletaCodigo',{  
-                    id:id 
+            console.log('entrou')
+            await axios.post('http://178.128.148.63:3000/getFaleConosco',{   
                 }, (err, data) => {
                 }).then(data => {
                     console.log(data.data['desc'])
-                    if(data.data['status'] == 'ok'){
-                        Alert.alert( 'Excluir professor','Excluido com sucesso!',[{text: 'OK', onPress: () => {}}])
-                        this.getRedacoes()
-                    }
-                    
-                })
-        } catch (error) {
-            console.log(error)
-        // Error saving data
-        }
-    }
-    editarCodigo = async (id) =>{
-        this.setState({...initialState})
-        this.props.navigation.navigate('EditaCodigo',{'id':id})
-    }
-    getRedacoes = async () => {
-        try {
-            this.atualizaStatus()
-            await axios.post('http://178.128.148.63:3000/getCodigos',{   
-                }, (err, data) => {
-                }).then(data => {
                     let listItems = []
+                    this.setState({abriu:true})
                     let currentItem
                     for(let i =0; i< data.data['desc'].length; i++){
                         currentItem = data.data['desc'][i]
-                        listItems.push({id: currentItem['id'], title: currentItem['parceiro'] + ': ' + currentItem['quantidade'] + ' Disponíveis'})
+                        console.log(currentItem)
+                        let tipo = ''
+                        if(currentItem['tipo'] == 'aluno')
+                            tipo = 'Enviado pelo aluno: '
+                        else
+                            tipo = 'Enviado pelo professor: '
+                        listItems.push({id: currentItem['id'], title: tipo + currentItem['nome']})
                     }
                     this.setState({registros:listItems})
                     
@@ -88,16 +90,10 @@ export default class Register extends Component {
         // Error saving data
         }
     }
-    componentDidMount () {
-        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
-          this.getRedacoes();
-        });
-    }
     
     render() {
-        if(this.state.abriu){
-            this.getRedacoes()
-        }
+        if(!this.state.abriu)
+            this.getDados()
         return(
             <View style={styles.content} >  
                 <ScrollView>
@@ -108,7 +104,7 @@ export default class Register extends Component {
                                 </TouchableOpacity>
                             </View>
                             <View >
-                                <Text style={styles.contentTextHeader} >CÓDIGOS CADASTRADOS</Text>
+                                <Text style={styles.contentTextHeader} >FALE CONOSCO</Text>
                             </View>
 
                         </View>
@@ -123,15 +119,6 @@ export default class Register extends Component {
                                 renderItem={({ item }) => <Item style={{borderWidth: 1}}title={item.title} id={item.id} navigate={this}/>}
                                 keyExtractor={item => item.id}
                             />
-                        </View>
-
-                        <View style={styles.content_buttons}> 
-                            <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('CadastrarCodigo')}>
-                                <View style={styles.headerButton}>
-                                    <Icon style={styles.iconStart} name="check" size={30} color='black' />
-                                    <Text style={styles.textButton} >Novo Código</Text>
-                                </View>
-                            </TouchableOpacity>      
                         </View>
                 </ScrollView> 
             </View> 
@@ -158,7 +145,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         position: 'absolute',
         left:0,
-        marginLeft:5
+        marginLeft:15
         
     },
     contentTextHeader:{ // Style do Texto que fica no centro do header
@@ -194,12 +181,5 @@ const styles = StyleSheet.create({
         color: 'black',        
         fontSize: 20
     },
-    iconStart:{ // Style do Icone que fica no start do Header
-        justifyContent: 'flex-start',
-        position: 'absolute',
-        left:0,
-        marginLeft:5
-        
-    }
 
 })
