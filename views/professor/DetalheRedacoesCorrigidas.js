@@ -11,7 +11,7 @@ import {
         ScrollView,
         FlatList
     } from 'react-native'
-const initialState = {registros: [],abriu: false}
+const initialState = { registros: [],abriu: false}
 
 
 function Item({ title, id, navigate }) {
@@ -38,6 +38,12 @@ function Item({ title, id, navigate }) {
 export default class Register extends Component {
     state = {
         ...initialState
+    }
+    componentDidMount() {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+            if(!this.state.abriu)
+                this.getRedacao()
+        });
     }
     getRedacoes = async () => {
         try {
@@ -72,9 +78,6 @@ export default class Register extends Component {
     }
     
     render() {
-        if(!this.state.abriu){
-            this.getRedacoes()
-        }
         return(
             <ScrollView>
                 <View style={styles.content} >  

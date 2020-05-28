@@ -30,7 +30,7 @@ function Item({ title, id, navigate }) {
             height: 40
         }} onPress={() => Alert.alert( 'Temas','O que deseja fazer?',[
             {text: 'Editar', onPress: () => navigate.editarTema(id)},
-            {text: 'Excluir', onPress:() => navigate.excluirTema(id)}])}>
+            {text: 'Cancelar', onPress:() => {}}])}>
                 <Text style={{
                     color: 'black',
                     fontSize: 20

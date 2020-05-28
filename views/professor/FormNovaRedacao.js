@@ -6,6 +6,7 @@ import { RNPhotoEditor } from 'react-native-photo-editor'
 import ImgToBase64 from 'react-native-image-base64'
 import RNFS from 'react-native-fs'
 import {AudioRecorder, AudioUtils} from 'react-native-audio'
+import Loader from './../LoadSpinner'
 import {
     View,
     Text, 
@@ -16,7 +17,7 @@ import {
     Alert,
     TouchableOpacity
 } from 'react-native'
-const initialState = {caminhoAudio: '',audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac', hasPermission: undefined, abriu: false, aluno: '',timerCont: 0,timer:'',contador:'00:00', idRedacao: '' ,caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
+const initialState = {loading: false, caminhoAudio: '',audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac', hasPermission: undefined, abriu: false, aluno: '',timerCont: 0,timer:'',contador:'00:00', idRedacao: '' ,caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
 export default class Register extends Component {
     state = {
         ...initialState
@@ -31,6 +32,10 @@ export default class Register extends Component {
         });
       }
     componentDidMount() {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+            if(!this.state.abriu)
+                this.getRedacao()
+        });
         AudioRecorder.requestAuthorization().then((isAuthorised) => {
           this.setState({ hasPermission: isAuthorised });  
           if (!isAuthorised) return;  
@@ -66,15 +71,17 @@ export default class Register extends Component {
                 nomeArquivo: data.data['desc'][0]['nomeArquivo'],
                 previewImg: {uri: 'file://' + imagePath },
                 idProfessor: idProfessorInt                   
-            })           
+            })         
+            this.setState({loading: false})  
         })
     }
     //função chamada ao carregar a view, usada para trazer os dados da redacao
     getRedacao = async () => {
         try { 
+            this.setState({loading: true})
             let idRedacao = this.props.navigation.getParam('id','0')   
             ToastAndroid.show('Por favor, aguarde...', ToastAndroid.LONG)
-            await axios.post('http://178.128.148.63:3000/getRedacaoId',{                   
+            await axios.post('http://178.128.148.63:3000/getRedacaoProfessor',{                   
                     id: idRedacao
                 }).then(data => {
                     this.setState({abriu:true})
@@ -90,31 +97,53 @@ export default class Register extends Component {
     //Função que complementa o sendRedacao
     enviaDados = async (base64String) => {
         ToastAndroid.show('Por favor, aguarde...', ToastAndroid.LONG)
-        const idProfessor = await AsyncStorage.getItem('@idAdmin')
-        let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))        
-        await axios.post('http://178.128.148.63:3000/sendCorrecao', {
-            idRedacao:this.state.idRedacao,
-            dadosImagem: base64String,
-            observacoes:this.state.observacao,
-            nota:this.state.nota,
-            idProfessor:idProfessorInt,
-            usuarioEnvio:'professor'
-        }).then(data => {
-            let retorno = data.data
-            switch(retorno['status']) {
-                case 'ok':                    
-                    ToastAndroid.show('Redação Corrigida com sucesso!', ToastAndroid.LONG)
-                    this.props.navigation.navigate('NovasRedacoes') 
-                    break;
-                case 'erro':
-                    Alert.alert( 'Erro','Erro Enviar Redação!. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
-                    break;
-            }
-        })
+        //Vou montar todo o FormData com o audio e a iamgem para enviar para a API
+        try{
+            console.log('começando')
+            const idProfessor = await AsyncStorage.getItem('@idAdmin')
+            let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))        
+            let formData = new FormData();
+            const audio = {
+                uri: 'file://' + this.state.caminhoAudio,
+                type: 'audio/aac',
+                name: this.state.caminhoAudio
+              }
+            formData.append('file', audio)
+            formData.append('dadosImagem', base64String)
+            formData.append('idRedacao', this.state.idRedacao)
+            formData.append('observacoes', this.state.observacao)
+            formData.append('nota', this.state.nota)
+            formData.append('idProfessor', idProfessorInt)
+            formData.append('usuarioEnvio', 'professor')
+            await axios({
+                url: 'http://178.128.148.63:3000/sendCorrecao',
+                method: 'POST',
+                headers:{
+                    'Content-Type':'multipart/form-data'
+                },
+                data:formData
+            }).then(data => {
+                this.setState({loading: false})  
+                let retorno = data.data
+                switch(retorno['status']) {
+                    case 'ok':                    
+                        ToastAndroid.show('Redação Corrigida com sucesso!', ToastAndroid.LONG)
+                        this.props.navigation.navigate('NovasRedacoes') 
+                        break;
+                    case 'erro':
+                        Alert.alert( 'Erro','Erro Enviar Redação!. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
+                        break;
+                }
+            })
+        }catch(err){
+            console.log(err)
+        }
+        
     }
     //Função que pega os dados e envia para a api
     sendRedacao = () => {
         try{
+            this.setState({loading: true})  
             console.log(this.state.caminhoImg)
             ImgToBase64.getBase64String('file://'+this.state.caminhoImg)
             .then(base64String => {
@@ -150,11 +179,10 @@ export default class Register extends Component {
         this.setState({timerCont: this.state.timerCont + 1,contador:'' +new Date(this.state.timerCont * 1000).toISOString().substr(11, 8)})
     }
     render() {
-        if(!this.state.abriu){
-            this.getRedacao()
-        }
         return(
             <View style={styles.content} >  
+                <Loader
+                    loading={this.state.loading} />
                 <View style={styles.header}>
                     <View style={styles.iconHeader}>
                         <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>

@@ -31,7 +31,7 @@ function Item({ title, id, navigate }) {
             alignItems: 'center',
             justifyContent: 'center',
             height: 40
-        }} onPress={() => navigate.props.navigation.navigate('FormNovaRedacao',{'id':id})}>
+        }} onPress={() => navigate.novaRedacao(id)}>
                 <Text style={{
                     color: 'black',
                     fontSize: 15
@@ -44,10 +44,19 @@ export default class Register extends Component {
     state = {
         ...initialState
     }
+    componentDidMount(){
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+            if(!this.state.abriu)
+                this.getRedacoes()
+        });
+    }
     atualizaStatus = () => {
         this.setState({abriu:false})
     }
-    
+    novaRedacao = (id) => {
+        this.setState({abriu:false})
+        this.props.navigation.navigate('FormNovaRedacao',{'id':id})
+    }
     getRedacoes = async () => {
         try {
             this.atualizaStatus()
@@ -77,8 +86,6 @@ export default class Register extends Component {
         }
     }    
     render() {
-        if(!this.state.abriu)
-            this.getRedacoes()
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>

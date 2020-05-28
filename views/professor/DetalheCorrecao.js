@@ -13,7 +13,7 @@ import {
         ToastAndroid,
         TouchableOpacity
     } from 'react-native'
-    const initialState = {abriu: false, aluno: '', idRedacao: '', nota: '',caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
+    const initialState = {loading: false, abriu: false, aluno: '', idRedacao: '', nota: '',caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
 export default class Register extends Component {
     
     state = {
@@ -27,6 +27,12 @@ export default class Register extends Component {
                 this.setState({previewImg:{uri: 'file://' + data}, caminhoImg: data })
             },
             hiddenControls: ['crop']
+        });
+    }
+    componentDidMount(){
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+            if(!this.state.abriu)
+                this.getRedacao()
         });
     }
     //Função chamada após o getRedacao, ele seta as variaveis padrões do sistema
@@ -95,6 +101,8 @@ export default class Register extends Component {
         }
         return(
             <View style={styles.content} >  
+                <Loader
+                    loading={this.state.loading} />
                 <View style={styles.header}>
 
                     <View style={styles.iconHeader}>
