@@ -5,17 +5,19 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { RNPhotoEditor } from 'react-native-photo-editor'
 import ImgToBase64 from 'react-native-image-base64'
 import RNFS from 'react-native-fs'
+import Loader from './../LoadSpinner'
+import SoundPlayer from 'react-native-sound-player'
 import {
-        View,
-        Text, 
-        StyleSheet,
-        Image,
-        ToastAndroid,
-        TouchableOpacity
-    } from 'react-native'
-    const initialState = {loading: false, abriu: false, aluno: '', idRedacao: '', nota: '',caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
+    View,
+    Text, 
+    StyleSheet,
+    Image,
+    ToastAndroid,
+    TouchableOpacity
+} from 'react-native'
+const initialState = {loading: false, abriu: false, aluno: '', idRedacao: '', nota: '',caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
+
 export default class Register extends Component {
-    
     state = {
         ...initialState
     }
@@ -35,46 +37,57 @@ export default class Register extends Component {
                 this.getRedacao()
         });
     }
+
+    playAudio = () => {
+        ToastAndroid.show('Por favor, aguarde...', ToastAndroid.LONG)
+        SoundPlayer.playUrl(`http://178.128.148.63:3000/getAudio.aac?id=${this.state.idAudio}`)
+    }
     //Função chamada após o getRedacao, ele seta as variaveis padrões do sistema
     loadItems = async (data) => {
-        const imagePath = `${RNFS.TemporaryDirectoryPath}/${data.data['desc'][0]['nomeArquivo']}`
-        const idProfessor = await AsyncStorage.getItem('@idAdmin')
-        let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
-        RNFS.writeFile(imagePath, data.data['desc'][0]['caminhoImg'], 'base64').then(() => {
-            console.log('id: ' + this.props.navigation.getParam('id', 0))
-            this.setState({
-                idRedacao:data.data['desc'][0]['id'],
-                tema: data.data['desc'][0]['tema'],
-                aluno: data.data['desc'][0]['nome'],
-                caminhoImg: imagePath,
-                nomeArquivo: data.data['desc'][0]['nomeArquivo'],
-                nota: data.data['desc'][0]['nota'],
-                previewImg: {uri: 'file://' + imagePath },
-                idProfessor: idProfessorInt   
-                
+        try{
+            const imagePath = `${RNFS.TemporaryDirectoryPath}/${data.data['desc'][0]['nomeArquivo']}`
+            const idProfessor = await AsyncStorage.getItem('@idAdmin')
+            let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
+            RNFS.writeFile(imagePath, data.data['desc'][0]['caminhoImg'], 'base64').then(() => {
+                this.setState({loading:false})
+                console.log('id: ' + this.props.navigation.getParam('id', 0))                
+                this.setState({
+                    idRedacao:data.data['desc'][0]['id'],
+                    tema: data.data['desc'][0]['tema'],
+                    aluno: data.data['desc'][0]['nome'],
+                    idAudio: data.data['desc'][0]['idCorrecao'],
+                    caminhoImg: imagePath,
+                    nomeArquivo: data.data['desc'][0]['nomeArquivo'],
+                    nota: data.data['desc'][0]['nota'],
+                    previewImg: {uri: 'file://' + imagePath },
+                    idProfessor: idProfessorInt                       
+                })
             })
+        }catch(error){
+            this.setState({loading:false})
+            console.log(error)
 
-            
-        })
+        }        
     }
     //função chamada ao carregar a view, usada para trazer os dados da redacao
     getRedacao = async () => {
         try {
+            this.setState({abriu:true})
+            this.setState({loading:true})
             let idRedacao = this.props.navigation.getParam('id','0')   
             console.log('id da redacao: ' + idRedacao)
             ToastAndroid.show('Por favor, aguarde...', ToastAndroid.LONG)
             await axios.post('http://178.128.148.63:3000/getRedacaoId',{                   
-                    id: idRedacao
-                }, (err, data) => {
-                    console.log(err)
-                    console.log(data)
-                }).then(data => {
-                    console.log(data)
-                    this.setState({abriu:true})
-                    console.log('entrou')
-                    this.loadItems(data)
-                    
-                })
+                id: idRedacao
+            }, (err, data) => {
+                console.log(err)
+                console.log(data)
+            }).then(data => {
+                console.log(data.data)
+                console.log('entrou')
+                this.loadItems(data)
+                
+            })
                 
         } catch (error) {
             console.log(error)
@@ -96,9 +109,6 @@ export default class Register extends Component {
         }
     }
     render() {
-        if(!this.state.abriu){
-            this.getRedacao()
-        }
         return(
             <View style={styles.content} >  
                 <Loader
@@ -124,6 +134,12 @@ export default class Register extends Component {
                 <View style={styles.content_buttons_first}> 
                     <Text style={styles.textTema}>Nota: {this.state.nota} </Text>  
                 </View>
+                <View style={styles.content_buttons_first}> 
+                <Text style={styles.labelButton} >Audio dica: {this.state.contador} </Text>
+                <TouchableOpacity  onPress={() => this.playAudio()}>
+                            <Icon name="play" size={40} color='#000'  /> 
+                </TouchableOpacity>  
+                </View>  
 
                 
                 <View style={styles.showImagem}> 

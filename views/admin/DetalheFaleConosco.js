@@ -9,7 +9,7 @@ import {
         Image,
         TouchableOpacity
     } from 'react-native'
-    const initialState = {nome: '', tipo: '', texto: '', abriu: false}
+    const initialState = {nome: '', tipo: '', texto: '',email: '', abriu: false}
 export default class Register extends Component {    
     state = {
         ...initialState
@@ -24,6 +24,7 @@ export default class Register extends Component {
             tipo = 'Aluno'
         this.setState({
             nome:data.data['desc'][0]['nome'],
+            email:data.data['desc'][0]['email'],
             tipo: tipo,
             abriu: true,
             texto: data.data['desc'][0]['texto'],
@@ -52,13 +53,12 @@ export default class Register extends Component {
     }
 
     componentDidMount () {
-        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
-            this.setState({...initialState})
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {            
+            if(this.state.abriu == false)
+                this.getDados()
           })
     }
     render() {
-        if(this.state.abriu == false)
-            this.getDados()
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>
@@ -77,6 +77,9 @@ export default class Register extends Component {
                 </View>
                 <View style={styles.content_buttons_first}> 
                     <Text style={styles.textTema}>Nome: {this.state.nome} </Text>  
+                </View>
+                <View style={styles.content_buttons_first}> 
+                    <Text style={styles.textTema}>E-Mail: {this.state.email} </Text>  
                 </View>
                 <View style={styles.content_buttons_first}> 
                     <Text style={styles.textTema}>Detalhes: {this.state.texto} </Text>  

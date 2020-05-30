@@ -54,7 +54,8 @@ export default class Register extends Component {
             path: this.state.caminhoImg,
             onDone: (data) => {
                 this.setState({previewImg:{uri: 'file://' + data}, caminhoImg: data })
-            }
+            },
+            hiddenControls: ['crop']
         });
     }
     //Função chamada após o getRedacao, ele seta as variaveis padrões do sistema

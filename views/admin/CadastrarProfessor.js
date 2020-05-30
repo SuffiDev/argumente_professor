@@ -14,7 +14,7 @@ import {
         ToastAndroid
     } from 'react-native'
     
-    const initialState = {nome:'', sobreNome: '', escola:'', cidade: '', estado: '', usuario: '', senha: '',abriu: true}
+    const initialState = {nome:'', sobreNome: '',email: '', escola:'', cidade: '', estado: '', usuario: '', senha: '',abriu: true}
 export default class Register extends Component {
     //fim do bloco
     state = {
@@ -31,6 +31,7 @@ export default class Register extends Component {
                     escola: this.state.escola,
                     cidade: this.state.cidade,
                     estado: this.state.estado,
+                    email: this.state.email,
                     usuario: this.state.usuario,
                     senha: this.state.senha,
                 }, (err, data) => {
@@ -55,7 +56,7 @@ export default class Register extends Component {
     verificaCampos = () => {
         try{
             console.log(this.state)
-            if( this.state.nome == null || this.state.sobreNome == null || this.state.escola == null|| this.state.cidade == null|| this.state.estado == null|| this.state.usuario == null|| this.state.senha == null){
+            if( this.state.nome == null || this.state.sobreNome == null|| this.state.sobreNome == null || this.state.escola == null|| this.state.cidade == null|| this.state.estado == null|| this.state.usuario == null|| this.state.senha == null){
                 return false
             }else{
                 return true
@@ -119,6 +120,10 @@ export default class Register extends Component {
                         value={this.state.estado} defaultValue={"Selecione"} options={this.listEstados} onSelect={(estado) => this.updateEstado(estado)}/> 
                      
                 </View>  
+                <View style={styles.contentButtons}> 
+                    <Text style={styles.labelButton} >E-Mail: </Text>
+                    <TextInput style={styles.textContent} value={this.state.email} placeholder="E-Mail" onChangeText={(email) => this.setState({ email })}/>  
+                </View>   
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Usuario: </Text>
                     <TextInput style={styles.textContent} value={this.state.usuario} placeholder="Usuario" onChangeText={(usuario) => this.setState({ usuario })}/>  

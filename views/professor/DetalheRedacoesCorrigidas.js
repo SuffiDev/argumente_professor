@@ -42,7 +42,7 @@ export default class Register extends Component {
     componentDidMount() {
         this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
             if(!this.state.abriu)
-                this.getRedacao()
+                this.getRedacoes()
         });
     }
     getRedacoes = async () => {
