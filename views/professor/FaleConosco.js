@@ -19,11 +19,14 @@ import {
     } from 'react-native'
 const initialState = {screen: 'FaleConosco',comentario:'' }
 export default class Register extends Component {
+    state = {
+        ...initialState
+    }
     sendMensagem = async () => {
         try{
             if(this.verificaCampos()){
                 ToastAndroid.show('Por favor, aguarde...', ToastAndroid.SHORT);
-                const idAluno = await AsyncStorage.getItem('@idAluno')
+                const idAluno = await AsyncStorage.getItem('@idAdmin')
                 let idAlunoInt = parseInt( idAluno.replace(/^"|"$/g, ""))
                 await axios.post('http://178.128.148.63:3000/enviaComentario',{           
                     id: idAlunoInt,
@@ -86,6 +89,7 @@ export default class Register extends Component {
                         numberOfLines={12}
                         textAlignVertical = "top"
                         placeholder="Escreva seu comentario: "
+                        value={this.state.comentario}
                         />  
                 </View>
 

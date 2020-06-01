@@ -33,8 +33,7 @@ export default class Register extends Component {
       }
     componentDidMount() {
         this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
-            if(!this.state.abriu)
-                this.getRedacao()
+            this.getRedacao()
         });
         AudioRecorder.requestAuthorization().then((isAuthorised) => {
           this.setState({ hasPermission: isAuthorised });  
@@ -205,7 +204,7 @@ export default class Register extends Component {
                     <TextInput style={styles.textTema} placeholder="Digite uma nota" value={this.state.nota} onChangeText={(nota) => this.setState({ nota })}></TextInput>
                 </View>
                 <View style={styles.content_buttons_first}> 
-                <Text style={styles.labelButton} >Audio dica: {this.state.contador} </Text>
+                <Text style={styles.labelButton} >Áudio dica: {this.state.contador} </Text>
                 <TouchableOpacity  onPressIn={() => this.iniciaContador()} onPressOut={() => this.finalizaContador()}>
                             <Icon name="play" size={30} color='#000'  /> 
                 </TouchableOpacity>  

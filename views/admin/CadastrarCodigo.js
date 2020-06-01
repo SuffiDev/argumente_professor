@@ -4,6 +4,7 @@ import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
 import ModalDropdown from 'react-native-modal-dropdown'
 import ImagePicker from 'react-native-image-picker'
+import Loader from './../LoadSpinner'
 import {
         View,
         Text, 
@@ -15,7 +16,7 @@ import {
         Alert,
         ToastAndroid
     } from 'react-native'
-const initialState = {parceiro:'', codigo: '', id:'', quantidade: '',abriu: true, previewImg: '', caminhoImg: ''}
+const initialState = {loading: false, parceiro:'', codigo: '', id:'', quantidade: '',abriu: true, previewImg: '', caminhoImg: ''}
 const options = {
     quality       : 1,
     mediaType    : "photo",
@@ -35,6 +36,7 @@ export default class Register extends Component {
     //Função que salva o perfil
     saveCodigo = async () => {
         try{
+            this.setState({loading: true})
             ToastAndroid.show('Por favor, aguarde...', ToastAndroid.SHORT)
             console.log(this.verificaCampos())
             if(this.verificaCampos()){
@@ -48,6 +50,7 @@ export default class Register extends Component {
                     console.log(err)
                     console.log(data)
                 }).then(data => {
+                    this.setState({loading: false})
                     if(data.data['status'] == 'ok'){
                         Alert.alert( 'Códigos',"Dados Salvos com sucesso!",[{text: 'OK', onPress: () => {this.props.navigation.navigate('ListaCodigos')}}])                        
                     }else{
@@ -91,6 +94,8 @@ export default class Register extends Component {
     render() {
         return(
             <View style={styles.content} >  
+                <Loader
+                    loading={this.state.loading} />
                 <View style={styles.header}>
                     <View style={styles.iconStart}>
                         <TouchableOpacity  onPress={() => this.props.navigation.navigate('ListaCodigos')}>

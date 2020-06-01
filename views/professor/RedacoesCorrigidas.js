@@ -28,7 +28,7 @@ function Item({ title, id, navigate }) {
             alignItems: 'center',
             justifyContent: 'center',
             height: 40
-        }} onPress={() => navigate.props.navigation.navigate('DetalheRedacoesCorrigidas',{'id':id})}>
+        }} onPress={() => {navigate.props.navigation.navigate('DetalheCorrecao',{'id':id})}}>
                 <Text style={{
                     color: 'black',
                     fontSize: 15
@@ -69,11 +69,13 @@ export default class Register extends Component {
         // Error saving data
         }
     }
+    componentDidMount () {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+            this.getRedacoes()
+        });
+    }
     
     render() {
-        if(!this.state.abriu){
-            this.getRedacoes()
-        }
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>

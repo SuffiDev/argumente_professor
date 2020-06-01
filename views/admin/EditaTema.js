@@ -78,9 +78,6 @@ export default class Register extends Component {
     }
     //Função que salva o tema
     saveTema = async () => {
-        if(this.state.abriu){
-            this.onLoad()
-        }
         try{
             if(this.verificaCampos()){
                 ToastAndroid.show('Por favor, aguarde...', ToastAndroid.LONG)
@@ -132,7 +129,9 @@ export default class Register extends Component {
 
     componentDidMount () {
         this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
-          this.setState({...initialState});
+            if(this.state.abriu){
+                this.onLoad()
+            }
         });
     }
     //Função que verifica se tem algum campo vazio
@@ -161,9 +160,6 @@ export default class Register extends Component {
         })
     }
     render() {
-        if(this.state.abriu){
-            this.onLoad()
-        }
         return(
             <View style={styles.content} >  
                 <View style={styles.header}>

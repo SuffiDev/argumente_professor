@@ -38,7 +38,7 @@ function Item({ title, id, navigate }) {
             </TouchableOpacity>
         </View>
     );
-    }
+}
 export default class Register extends Component {
     state = {
         ...initialState
@@ -52,7 +52,7 @@ export default class Register extends Component {
                     console.log(data.data['desc'])
                     if(data.data['status'] == 'ok'){
                         Alert.alert( 'Excluir professor','Excluido com sucesso!',[{text: 'OK', onPress: () => {}}])
-                        this.getRedacoes()
+                        this.getProfessores()
                     }
                     
                 })
@@ -62,10 +62,10 @@ export default class Register extends Component {
         }
     }
     editarProfessor = async (id) =>{
-        this.setState({...initialState})
+        this.setState({abriu:false})
         this.props.navigation.navigate('AlterarProfessor',{'id':id})
     }
-    getRedacoes = async () => {
+    getProfessores = async () => {
         try {
             await axios.post('http://178.128.148.63:3000/getProfessores',{   
                 }, (err, data) => {
@@ -87,11 +87,13 @@ export default class Register extends Component {
         // Error saving data
         }
     }
+    componentDidMount () {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+            this.getProfessores()
+        });
+    }
     
     render() {
-        if(!this.state.abriu){
-            this.getRedacoes()
-        }
         return(
             <View style={styles.content} >  
                 <ScrollView>

@@ -60,6 +60,7 @@ export default class Register extends Component {
     //    }
     //}
     editarFaleConosco = async (id) =>{
+        this.setState({abriu:false})
         this.props.navigation.navigate('DetalheFaleConosco',{'id':id})
     }
     getDados = async () => {
@@ -91,9 +92,12 @@ export default class Register extends Component {
         }
     }
     
-    render() {
-        if(!this.state.abriu)
+    componentDidMount () {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
             this.getDados()
+        });
+    }
+    render() {
         return(
             <View style={styles.content} >  
                 <ScrollView>

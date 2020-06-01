@@ -15,13 +15,14 @@ import {
     ToastAndroid,
     TouchableOpacity
 } from 'react-native'
-const initialState = {loading: false, abriu: false, aluno: '', idRedacao: '', nota: '',caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
+import Sound from 'react-native-sound'
+const initialState = {playable: false, loading: false, descricao: '', abriu: false, aluno: '', idRedacao: '', nota: '',caminhoImg: '', observacao: '', idProfessor: '', previewImg: require('../../assets/imgs/icon_no_photo.png'), nomeArquivo: ''}
 
 export default class Register extends Component {
     state = {
         ...initialState
     }
-    alteraImagem =() => {
+        alteraImagem =() => {
         RNPhotoEditor.Edit({
             path: this.state.caminhoImg,
             onDone: (data) => {
@@ -36,11 +37,24 @@ export default class Register extends Component {
             if(!this.state.abriu)
                 this.getRedacao()
         });
+        SoundPlayer.addEventListener('FinishedLoadingURL', ({ success, url }) => {
+            this.setState({playable: true})
+            console.log('finished loading url', success, url)
+        })
+        SoundPlayer.addEventListener('FinishedPlaying', ({ success }) => {
+            console.log('finished playing', success)
+        })
     }
 
     playAudio = () => {
-        ToastAndroid.show('Por favor, aguarde...', ToastAndroid.LONG)
-        SoundPlayer.playUrl(`http://178.128.148.63:3000/getAudio.aac?id=${this.state.idAudio}`)
+        try{
+            if(this.state.playable)
+                SoundPlayer.play()
+            else
+                ToastAndroid.show('O Audio está sendo carregado! Por favor, aguarde', ToastAndroid.LONG)
+        }catch(error){
+            console.log(error)
+        }
     }
     //Função chamada após o getRedacao, ele seta as variaveis padrões do sistema
     loadItems = async (data) => {
@@ -49,19 +63,21 @@ export default class Register extends Component {
             const idProfessor = await AsyncStorage.getItem('@idAdmin')
             let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
             RNFS.writeFile(imagePath, data.data['desc'][0]['caminhoImg'], 'base64').then(() => {
-                this.setState({loading:false})
-                console.log('id: ' + this.props.navigation.getParam('id', 0))                
+                console.log('id: ' + this.props.navigation.getParam('id', 0))                             
                 this.setState({
                     idRedacao:data.data['desc'][0]['id'],
                     tema: data.data['desc'][0]['tema'],
                     aluno: data.data['desc'][0]['nome'],
                     idAudio: data.data['desc'][0]['idCorrecao'],
+                    descricao: data.data['desc'][0]['descricao'],
                     caminhoImg: imagePath,
                     nomeArquivo: data.data['desc'][0]['nomeArquivo'],
                     nota: data.data['desc'][0]['nota'],
                     previewImg: {uri: 'file://' + imagePath },
                     idProfessor: idProfessorInt                       
                 })
+                SoundPlayer.loadUrl(`http://178.128.148.63:3000/getAudio.aac?id=${this.state.idAudio}`)   
+                this.setState({loading:false})
             })
         }catch(error){
             this.setState({loading:false})
@@ -135,7 +151,10 @@ export default class Register extends Component {
                     <Text style={styles.textTema}>Nota: {this.state.nota} </Text>  
                 </View>
                 <View style={styles.content_buttons_first}> 
-                <Text style={styles.labelButton} >Audio dica: {this.state.contador} </Text>
+                    <Text style={styles.textTema}>Descrição: {this.state.descricao} </Text>  
+                </View>
+                <View style={styles.content_buttons_first}> 
+                <Text style={styles.labelButton} >Áudio dica: {this.state.contador} </Text>
                 <TouchableOpacity  onPress={() => this.playAudio()}>
                             <Icon name="play" size={40} color='#000'  /> 
                 </TouchableOpacity>  

@@ -52,7 +52,7 @@ export default class Register extends Component {
                     console.log(data.data['desc'])
                     if(data.data['status'] == 'ok'){
                         Alert.alert( 'Excluir professor','Excluido com sucesso!',[{text: 'OK', onPress: () => {}}])
-                        this.getRedacoes()
+                        this.getCodigos()
                     }
                     
                 })
@@ -62,10 +62,10 @@ export default class Register extends Component {
         }
     }
     editarCodigo = async (id) =>{
-        this.setState({...initialState})
-        this.props.navigation.navigate('EditaCodigo',{'id':id})
+        this.setState({abriu:false})
+        this.props.navigation.navigate('AlterarCodigo',{'id':id})
     }
-    getRedacoes = async () => {
+    getCodigos = async () => {
         try {
             await axios.post('http://178.128.148.63:3000/getCodigos',{   
                 }, (err, data) => {
@@ -83,11 +83,13 @@ export default class Register extends Component {
             console.log(error)
         // Error saving data
         }
-    }    
+    }        
+    componentDidMount () {
+        this._onFocusListener = this.props.navigation.addListener('didFocus', (payload) => {
+            this.getCodigos()
+        });
+    }
     render() {
-        if(!this.state.abriu){
-            this.getRedacoes()
-        }
         return(
             <View style={styles.content} >  
                 <ScrollView>
