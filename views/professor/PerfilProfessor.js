@@ -13,7 +13,7 @@ import {
         Alert,
         ToastAndroid
     } from 'react-native'
-    const initialState = {nome:'', sobrenome: '', usuario:'', senha: '', escola: '', cidade:'', estado: 'Selecione', abriu: false, idProfessor: ''}
+    const initialState = {nome:'', sobrenome: '', telefone: '', usuario:'', senha: '', escola: '', cidade:'', estado: 'Selecione', abriu: false, idProfessor: ''}
 export default class Register extends Component {
     state = {
         ...initialState
@@ -24,7 +24,7 @@ export default class Register extends Component {
         try {
             const idProfessor = await AsyncStorage.getItem('@idAdmin')
             let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))
-            let retornoReq = await axios.post('http://178.128.148.63:3000/getProfessor',{                   
+            await axios.post('http://178.128.148.63:3000/getProfessor',{                   
                     id: idProfessorInt,
                 }, (err, data) => {
                     console.log(err)
@@ -52,6 +52,7 @@ export default class Register extends Component {
             sobrenome: data.data['desc'][0]['sobrenome'], 
             usuario:data.data['desc'][0]['usuario'], 
             senha: data.data['desc'][0]['senha'], 
+            telefone: data.data['desc'][0]['telefone'], 
             idade: data.data['desc'][0]['idade'], 
             escola: data.data['desc'][0]['escola'], 
             cidade: data.data['desc'][0]['cidade'], 
@@ -72,6 +73,7 @@ export default class Register extends Component {
                     usuario: this.state.usuario,
                     senha: this.state.senha,
                     idade: this.state.idade,
+                    telefone: this.state.telefone,
                     escola: this.state.escola,
                     cidade: this.state.cidade,
                     estado: this.state.estado
@@ -97,7 +99,7 @@ export default class Register extends Component {
     verificaCampos = () => {
         try{
             console.log(this.state)
-            if( this.state.nome == null || this.state.sobrenome == null || this.state.usuario == null ||
+            if( this.state.nome == null || this.state.sobrenome == null || this.state.telefone == null || this.state.usuario == null ||
             this.state.senha == null || this.state.escola == undefined || this.state.cidade == null || this.state.estado == undefined){
                 return false
             }else{
@@ -140,6 +142,10 @@ export default class Register extends Component {
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Sobrenome: </Text>
                     <TextInput style={styles.textContent} value={this.state.sobrenome} placeholder="Sobrenome" onChangeText={(sobrenome) => this.setState({ sobrenome })}/>  
+                </View>
+                <View style={styles.contentButtons}> 
+                    <Text style={styles.labelButton} >Telefone: </Text>
+                    <TextInput style={styles.textContent} value={this.state.telefone} placeholder="Telefone" onChangeText={(telefone) => this.setState({ telefone })}/>  
                 </View>
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Usuario: </Text>

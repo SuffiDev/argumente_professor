@@ -58,16 +58,16 @@ import Menu from './views/Menu'
 const Nav = createDrawerNavigator({
     //Stack e Logout
     Stack: {screen:AppNavigator,navigationOptions:{drawerLabel: () => null}},
-    Logout: {screen:Login,navigationOptions:{drawerLabel: () => null}},
     //Professor
     IndexProfessor: {screen:IndexProfessor,navigationOptions:{title: 'Index'}},
     PerfilProfessor: {screen:PerfilProfessor,navigationOptions:{title: 'Perfil'}},
-    NovasRedacoes: {screen:NovasRedacoes,navigationOptions:{title: 'Novas Redações'}},
+    FaleConosco: {screen:FaleConosco,navigationOptions:{title: 'Fale Conosco'}},
+    NovasRedacoes: {screen:NovasRedacoes,navigationOptions:{title: 'Redações a Corrigir'}},
     FormNovaRedacao: {screen:FormNovaRedacao,navigationOptions:{drawerLabel: () => null}},
     RedacoesCorrigidas: {screen:RedacoesCorrigidas,navigationOptions:{title: 'Redações Corrigidas'}},
     DetalheRedacoesCorrigidas: {screen:DetalheRedacoesCorrigidas,navigationOptions:{drawerLabel: () => null}},
     DetalheCorrecao: {screen:DetalheCorrecao,navigationOptions:{drawerLabel: () => null}},
-    FaleConosco: {screen:FaleConosco,navigationOptions:{title: 'Fale Conosco'}},
+    Logout: {screen:Login,navigationOptions:{title: 'Logout'}},
     //Admin
     IndexAdmin: {screen:IndexAdmin,navigationOptions:{drawerLabel: () => null}},
     EditaTema: {screen:EditaTema,navigationOptions:{drawerLabel: () => null}},

@@ -49,6 +49,23 @@ export default class Index extends Component {
                     </View> 
 
                 </View>
+
+                <View style={styles.content_buttons}> 
+                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('PerfilProfessor')}>
+                        <View style={styles.headerButton}>
+                            <Icon style={styles.iconStart} name="user" size={30} color='black' />
+                            <Text style={styles.textButton} >Perfil</Text>
+                        </View>
+                    </TouchableOpacity>     
+                </View>
+                <View style={styles.content_buttons}> 
+                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('FaleConosco')}>
+                        <View style={styles.headerButton}>
+                            <Icon style={styles.iconStart} name="phone" size={30} color='black' />
+                            <Text style={styles.textButton} >Fale Conosco</Text>
+                        </View>
+                    </TouchableOpacity>     
+                </View>
                 <View style={styles.content_buttons}> 
                     <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('NovasRedacoes')}>
                         <View style={styles.headerButton}>
@@ -65,24 +82,6 @@ export default class Index extends Component {
                             <Text style={styles.textButton} >Redações Corrigidas</Text>
                         </View>
                     </TouchableOpacity>  
-                </View>
-
-                <View style={styles.content_buttons}> 
-                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('PerfilProfessor')}>
-                        <View style={styles.headerButton}>
-                            <Icon style={styles.iconStart} name="user" size={30} color='black' />
-                            <Text style={styles.textButton} >Perfil</Text>
-                        </View>
-                    </TouchableOpacity>     
-                </View>
-
-                <View style={styles.content_buttons}> 
-                    <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('FaleConosco')}>
-                        <View style={styles.headerButton}>
-                            <Icon style={styles.iconStart} name="phone" size={30} color='black' />
-                            <Text style={styles.textButton} >Fale Conosco</Text>
-                        </View>
-                    </TouchableOpacity>     
                 </View>
                 <View style={styles.content_buttons}> 
                     <TouchableOpacity style={styles.content_buttons} onPress={() => this.props.navigation.navigate('Logout')}>

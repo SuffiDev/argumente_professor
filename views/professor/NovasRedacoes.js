@@ -95,7 +95,7 @@ export default class Register extends Component {
                         </TouchableOpacity>
                     </View>
                     <View >
-                        <Text style={styles.contentTextHeader} >NOVAS REDAÇÕES</Text>
+                        <Text style={styles.contentTextHeader} >REDAÇÕES A CORRIGIR</Text>
                     </View>
 
                 </View>

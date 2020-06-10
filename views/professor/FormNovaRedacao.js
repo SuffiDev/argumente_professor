@@ -54,7 +54,8 @@ export default class Register extends Component {
             onDone: (data) => {
                 this.setState({previewImg:{uri: 'file://' + data}, caminhoImg: data })
             },
-            hiddenControls: ['crop']
+            hiddenControls: ['crop','text','sticker'],
+            colors: ['#0000FF','#FF0000']
         });
     }
     //Função chamada após o getRedacao, ele seta as variaveis padrões do sistema
@@ -94,49 +95,72 @@ export default class Register extends Component {
         }
         
     }
+    //Função que verifica se tem algum campo vazio
+    verificaCampos = () => {
+        try{
+            console.log(this.state)
+            if( this.state.observacao == "" || this.state.nota == "" || this.state.contador == "00:00"){
+                return false
+            }else{
+                return true
+            }
+
+        }catch(err){
+            Alert.alert( 'Redação',"Erro ao salvar dados! Verifique os campos e tente novamente",[{text: 'OK', onPress: () => {}}])
+        }
+    }
     //Função que complementa o sendRedacao
     enviaDados = async (base64String) => {
-        ToastAndroid.show('Por favor, aguarde...', ToastAndroid.LONG)
-        //Vou montar todo o FormData com o audio e a iamgem para enviar para a API
-        try{
-            console.log('começando')
-            const idProfessor = await AsyncStorage.getItem('@idAdmin')
-            let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))        
-            let formData = new FormData();
-            const audio = {
-                uri: 'file://' + this.state.caminhoAudio,
-                type: 'audio/aac',
-                name: this.state.caminhoAudio
-              }
-            formData.append('file', audio)
-            formData.append('dadosImagem', base64String)
-            formData.append('idRedacao', this.state.idRedacao)
-            formData.append('observacoes', this.state.observacao)
-            formData.append('nota', this.state.nota)
-            formData.append('idProfessor', idProfessorInt)
-            formData.append('usuarioEnvio', 'professor')
-            await axios({
-                url: 'http://178.128.148.63:3000/sendCorrecao',
-                method: 'POST',
-                headers:{
-                    'Content-Type':'multipart/form-data'
-                },
-                data:formData
-            }).then(data => {
+        if(this.verificaCampos()){
+            ToastAndroid.show('Por favor, aguarde...', ToastAndroid.LONG)
+            //Vou montar todo o FormData com o audio e a iamgem para enviar para a API
+            try{
+                console.log('começando')
+                const idProfessor = await AsyncStorage.getItem('@idAdmin')
+                let idProfessorInt = parseInt( idProfessor.replace(/^"|"$/g, ""))        
+                let formData = new FormData();
+                const audio = {
+                    uri: 'file://' + this.state.caminhoAudio,
+                    type: 'audio/aac',
+                    name: this.state.caminhoAudio
+                  }
+                formData.append('file', audio)
+                formData.append('dadosImagem', base64String)
+                formData.append('idRedacao', this.state.idRedacao)
+                formData.append('observacoes', this.state.observacao)
+                formData.append('nota', this.state.nota)
+                formData.append('idProfessor', idProfessorInt)
+                formData.append('usuarioEnvio', 'professor')
+                await axios({
+                    url: 'http://178.128.148.63:3000/sendCorrecao',
+                    method: 'POST',
+                    headers:{
+                        'Content-Type':'multipart/form-data'
+                    },
+                    data:formData
+                }).then(data => {
+                    this.setState({loading: false})  
+                    let retorno = data.data
+                    switch(retorno['status']) {
+                        case 'ok':                    
+                            ToastAndroid.show('Redação Corrigida com sucesso!', ToastAndroid.LONG)
+                            this.props.navigation.navigate('NovasRedacoes') 
+                            break;
+                        case 'erro':
+                            Alert.alert( 'Erro','Erro Enviar Redação!. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
+                            break;
+                    }
+                })
+            }catch(err){
+                Alert.alert( 'Erro','Erro ao enviar correção! Detalhes: ' + err,[{text: 'Voltar', onPress: () => {}}])
                 this.setState({loading: false})  
-                let retorno = data.data
-                switch(retorno['status']) {
-                    case 'ok':                    
-                        ToastAndroid.show('Redação Corrigida com sucesso!', ToastAndroid.LONG)
-                        this.props.navigation.navigate('NovasRedacoes') 
-                        break;
-                    case 'erro':
-                        Alert.alert( 'Erro','Erro Enviar Redação!. Tente novamente mais tarde!',[{text: 'Voltar', onPress: () => {}}])
-                        break;
-                }
-            })
-        }catch(err){
-            console.log(err)
+                console.log(err)
+            }
+
+        }else{
+            this.setState({loading: false})  
+            Alert.alert( 'Erro','Preencha todos os campos incluindo Nota e Áudio dica e Observações!',[{text: 'Voltar', onPress: () => {}}])
+
         }
         
     }
@@ -150,6 +174,7 @@ export default class Register extends Component {
                 this.enviaDados(base64String)
             })            
         }catch(err){
+            this.setState({loading: false})  
             console.log(err)
         }
     }
@@ -201,7 +226,7 @@ export default class Register extends Component {
                 </View>
                 <View style={styles.content_buttons_first}> 
                     <Text style={styles.labelButton} >Nota: </Text>
-                    <TextInput style={styles.textTema} placeholder="Digite uma nota" value={this.state.nota} onChangeText={(nota) => this.setState({ nota })}></TextInput>
+                    <TextInput keyboardType={"numeric"} style={styles.textTema} placeholder="Digite uma nota" value={this.state.nota} onChangeText={(nota) => this.setState({ nota })}></TextInput>
                 </View>
                 <View style={styles.content_buttons_first}> 
                 <Text style={styles.labelButton} >Áudio dica: {this.state.contador} </Text>

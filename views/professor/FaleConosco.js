@@ -88,7 +88,7 @@ export default class Register extends Component {
                         multiline={true}
                         numberOfLines={12}
                         textAlignVertical = "top"
-                        placeholder="Escreva seu comentario: "
+                        placeholder="Escreva seu comentário: "
                         value={this.state.comentario}
                         />  
                 </View>

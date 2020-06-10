@@ -29,7 +29,8 @@ export default class Register extends Component {
                 console.log('done' + data)
                 this.setState({previewImg:{uri: 'file://' + data}, caminhoImg: data })
             },
-            hiddenControls: ['crop']
+            hiddenControls: ['crop','text','sticker'],
+            colors: ['#0000FF','#FF0000']
         });
     }
     componentDidMount(){
@@ -51,7 +52,7 @@ export default class Register extends Component {
             if(this.state.playable)
                 SoundPlayer.play()
             else
-                ToastAndroid.show('O Audio está sendo carregado! Por favor, aguarde', ToastAndroid.LONG)
+                ToastAndroid.show('O Audio está sendo carregado! Tente novamente em alguns segundos!', ToastAndroid.LONG)
         }catch(error){
             console.log(error)
         }
