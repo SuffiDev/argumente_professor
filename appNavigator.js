@@ -60,14 +60,14 @@ const Nav = createDrawerNavigator({
     Stack: {screen:AppNavigator,navigationOptions:{drawerLabel: () => null}},
     //Professor
     IndexProfessor: {screen:IndexProfessor,navigationOptions:{title: 'Index'}},
-    PerfilProfessor: {screen:PerfilProfessor,navigationOptions:{title: 'Perfil'}},
-    FaleConosco: {screen:FaleConosco,navigationOptions:{title: 'Fale Conosco'}},
     NovasRedacoes: {screen:NovasRedacoes,navigationOptions:{title: 'Redações a Corrigir'}},
     FormNovaRedacao: {screen:FormNovaRedacao,navigationOptions:{drawerLabel: () => null}},
     RedacoesCorrigidas: {screen:RedacoesCorrigidas,navigationOptions:{title: 'Redações Corrigidas'}},
+    FaleConosco: {screen:FaleConosco,navigationOptions:{title: 'Fale Conosco'}},
+    PerfilProfessor: {screen:PerfilProfessor,navigationOptions:{title: 'Perfil'}},
     DetalheRedacoesCorrigidas: {screen:DetalheRedacoesCorrigidas,navigationOptions:{drawerLabel: () => null}},
     DetalheCorrecao: {screen:DetalheCorrecao,navigationOptions:{drawerLabel: () => null}},
-    Logout: {screen:Login,navigationOptions:{title: 'Logout'}},
+    Logout: {screen:Login,navigationOptions:{title: 'Sair'}},
     //Admin
     IndexAdmin: {screen:IndexAdmin,navigationOptions:{drawerLabel: () => null}},
     EditaTema: {screen:EditaTema,navigationOptions:{drawerLabel: () => null}},

@@ -13,6 +13,7 @@ import {
         TouchableOpacity        
     } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
+import { StackActions, NavigationActions } from 'react-navigation'
 const initialState = {usuario: '', senha: '',tipoUsuario: ''}
 export default class Login extends Component {
 
@@ -35,6 +36,7 @@ export default class Login extends Component {
 
     //Função do login
     login = async () => {
+        console.log(this.props.navigation)
         let jsonEnvio = this.state
         if(this.state.usuario == "" || this.state.senha == "" || this.state.tipoUsuario == ""){
             Alert.alert( 'Erro ao logar','Preencha o usuario e senha corretamente!',[{text: 'Voltar', onPress: () => {}}])
@@ -57,6 +59,12 @@ export default class Login extends Component {
                             if(jsonEnvio.tipoUsuario == 'Professor')
                                 setaSessao(retorno['desc'][0]).then((data) =>{
                                     if(data == 'ok'){
+                                        //Eu reseto todas as navigations para não conflitar com professor e admin
+                                        const resetAction = StackActions.reset({
+                                            index: 0,
+                                            actions: [NavigationActions.navigate({ routeName: 'Login' })],
+                                          });
+                                        this.props.navigation.dispatch(resetAction);
                                         this.props.navigation.navigate('IndexProfessor')
                                     }else{
                                         Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde! ' + data ,[{text: 'Voltar', onPress: () => {}}])
@@ -65,6 +73,12 @@ export default class Login extends Component {
                             else
                                 setaSessao(retorno['desc'][0]).then((data) =>{
                                     if(data == 'ok'){
+                                        //Eu reseto todas as navigations para não conflitar com professor e admin
+                                        const resetAction = StackActions.reset({
+                                            index: 0,
+                                            actions: [NavigationActions.navigate({ routeName: 'Login' })],
+                                          });
+                                        this.props.navigation.dispatch(resetAction);
                                         this.props.navigation.navigate('IndexAdmin')
                                     }else{
                                         Alert.alert( 'Erro ao logar','Erro ao logar. Tente novamente mais tarde!' + data,[{text: 'Voltar', onPress: () => {}}])
@@ -86,6 +100,8 @@ export default class Login extends Component {
         }
     }
     render() {
+        this.props.navigation.dispatch(StackActions.popToTop())
+        
         return(
             <ImageBackground source={require('../assets/imgs/img_login_admin.jpg')} style={styles.imageLogin}>
                 <Image source={require('../assets/imgs/logo_argumente.png')} style={styles.logo}/> 

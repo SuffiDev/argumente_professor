@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
         color:'white',
         textAlign:'center',
         alignSelf:'center',
-        fontSize:20,
+        fontSize:15,
         fontFamily: "Arial",
     },
     headerButton:{ //Header de cada um dos botões que vão ficar no corpo da tela
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
         paddingLeft:10,
         borderRadius:10,
         borderWidth: 0.1,
-        fontSize: 18
+        fontSize: 15
     },
     textDropDown:{
         color: 'black',
@@ -222,11 +222,11 @@ const styles = StyleSheet.create({
     }, 
     textDropDownText:{
         color: 'black',
-        fontSize: 18,
+        fontSize: 15,
     }, 
     textDropDownRow:{
         color: 'black',
-        fontSize: 20,
+        fontSize: 15,
         width: 180
     }, 
     textButton:{ // Texto dos botões que vão ficar no corpo da tela
@@ -234,12 +234,12 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft:25,
         borderBottomWidth: 1,
-        fontSize: 20
+        fontSize: 15
     },
     labelButton:{ // Label dos textos
         color: 'black',
         marginLeft:25,
-        fontSize: 20
+        fontSize: 15
     },
     contentSend:{ // Label dos textos
         marginTop: 20,
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     },
     textButton:{ // Texto dos botões que vão ficar no corpo da tela
         color: 'black',        
-        fontSize: 20
+        fontSize: 15
     },
     
 })

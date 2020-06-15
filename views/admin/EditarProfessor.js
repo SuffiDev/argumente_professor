@@ -13,7 +13,7 @@ import {
         BackHandler,
         ToastAndroid
     } from 'react-native'
-    const initialState = {nome:'', sobrenome: '', usuario:'', senha: '', escola: '', cidade:'', estado: '', abriu: true, idProfessor: ''}
+    const initialState = {nome:'', sobrenome: '', usuario:'', senha: '', telefone: '', email:'', escola: '', cidade:'', estado: '', abriu: true, idProfessor: ''}
 export default class Register extends Component {
     state = {
         ...initialState
@@ -58,6 +58,8 @@ export default class Register extends Component {
             usuario:data.data['desc'][0]['usuario'], 
             senha: data.data['desc'][0]['senha'], 
             idade: data.data['desc'][0]['idade'], 
+            telefone: data.data['desc'][0]['telefone'], 
+            email: data.data['desc'][0]['email'], 
             escola: data.data['desc'][0]['escola'], 
             cidade: data.data['desc'][0]['cidade'], 
             estado: data.data['desc'][0]['estado']
@@ -77,7 +79,9 @@ export default class Register extends Component {
                     usuario: this.state.usuario,
                     senha: this.state.senha,
                     idade: this.state.idade,
+                    email: this.state.email,
                     escola: this.state.escola,
+                    telefone: this.state.telefone,
                     cidade: this.state.cidade,
                     estado: this.state.estado
                 }, (err, data) => {
@@ -149,15 +153,7 @@ export default class Register extends Component {
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Sobrenome: </Text>
                     <TextInput style={styles.textContent} value={this.state.sobrenome} placeholder="Sobrenome" onChangeText={(sobrenome) => this.setState({ sobrenome })}/>  
-                </View>
-                <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Usuario: </Text>
-                    <TextInput style={styles.textContent} value={this.state.usuario} placeholder="Usuario" onChangeText={(usuario) => this.setState({ usuario })}/>  
-                </View>
-                <View style={styles.contentButtons}> 
-                    <Text style={styles.labelButton} >Senha: </Text>
-                    <TextInput style={styles.textContent} value={this.state.senha} placeholder="Senha" onChangeText={(senha) => this.setState({ senha })}/>  
-                </View>              
+                </View>         
 
                 <View style={styles.contentButtons}> 
                     <Text style={styles.labelButton} >Escola: </Text>
@@ -173,9 +169,24 @@ export default class Register extends Component {
                         style={styles.textDropDown} ref="dropEstado"
                         textStyle={styles.textDropDownText} 
                         dropdownStyle={styles.textDropDownRow} 
-                        value={this.state.estado} defaultValue={this.state.estado} options={this.listEstados} onSelect={(estado) => this.updateEstado(estado)}/> 
-                     
+                        value={this.state.estado} defaultValue={this.state.estado} options={this.listEstados} onSelect={(estado) => this.updateEstado(estado)}/>                      
                 </View>
+                <View style={styles.contentButtons}> 
+                    <Text style={styles.labelButton} >E-Mail: </Text>
+                    <TextInput style={styles.textContent} value={this.state.email} placeholder="E-Mail" onChangeText={(email) => this.setState({ email })}/>  
+                </View>   
+                <View style={styles.contentButtons}> 
+                    <Text style={styles.labelButton} >Telefone: </Text>
+                    <TextInput style={styles.textContent} keyboardType={'numeric'} value={this.state.telefone} placeholder="Telefone (Apenas Numeros)" onChangeText={(telefone) => this.setState({ telefone })}/>  
+                </View>  
+                <View style={styles.contentButtons}> 
+                    <Text style={styles.labelButton} >Usuario: </Text>
+                    <TextInput style={styles.textContent} value={this.state.usuario} placeholder="Usuario" onChangeText={(usuario) => this.setState({ usuario })}/>  
+                </View>
+                <View style={styles.contentButtons}> 
+                    <Text style={styles.labelButton} >Senha: </Text>
+                    <TextInput style={styles.textContent} value={this.state.senha} placeholder="Senha" onChangeText={(senha) => this.setState({ senha })}/>  
+                </View>     
                 <View style={styles.contentSend}> 
                     <TouchableOpacity style={styles.sendButton} onPress={this.savePerfil}>
                         <View style={styles.headerButton}>
@@ -217,7 +228,7 @@ const styles = StyleSheet.create({
         color:'white',
         textAlign:'center',
         alignSelf:'center',
-        fontSize:20,
+        fontSize:15,
         fontFamily: "Arial",
     },
     headerButton:{ //Header de cada um dos botões que vão ficar no corpo da tela
@@ -267,7 +278,7 @@ const styles = StyleSheet.create({
     }, 
     textDropDownRow:{
         color: 'black',
-        fontSize: 20,
+        fontSize: 15,
         width: 180
     }, 
     textButton:{ // Texto dos botões que vão ficar no corpo da tela
@@ -275,12 +286,12 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft:25,
         borderBottomWidth: 1,
-        fontSize: 20
+        fontSize: 15
     },
     labelButton:{ // Label dos textos
         color: 'black',
         marginLeft:25,
-        fontSize: 20
+        fontSize: 15
     },
     contentSend:{ // Label dos textos
         marginTop: 20,
@@ -307,7 +318,7 @@ const styles = StyleSheet.create({
     },
     textButton:{ // Texto dos botões que vão ficar no corpo da tela
         color: 'black',        
-        fontSize: 20
+        fontSize: 15
     },
     
 })
